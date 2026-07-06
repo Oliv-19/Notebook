@@ -1,8 +1,13 @@
+import { useCanvas } from "./CanvasContext"
 
 function ColorChanger(){
+    const {brushColor, setBrushColor} = useCanvas()
+    const changeColor = (e)=> {
+        setBrushColor(e.target.value)   
+    }
     return (
         <>
-            <input type="color"/>
+            <input type="color" onChange={changeColor} defaultValue={brushColor}/>
         </>
     )
 }

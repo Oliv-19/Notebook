@@ -1,14 +1,17 @@
 import { useState } from 'react'
 import { Canvas } from './Canvas'
 import { CanvasNav } from './CanvasNav'
+import { CanvasProvider } from './CanvasContext'
 
 function App() {
   
 
   return (
     <>
+    <CanvasProvider>
       <CanvasNav/>
       <Canvas/>
+    </CanvasProvider>
     </>
   )
 }
