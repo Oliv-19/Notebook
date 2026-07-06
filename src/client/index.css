@@ -1,1 +1,5 @@
 @import "tailwindcss";
+
+*{
+    --green: #809d84
+}
