@@ -5,13 +5,14 @@ import CanvasDraw from "react-canvas-draw"
 import { useCanvas } from "./CanvasContext"
 
 export function Canvas(){
-   const {brushColor} = useCanvas()
+   const {brushColor, brushSize} = useCanvas()
     
     return (
         <>
         <div className="">
             <CanvasDraw
             brushColor={brushColor}
+            brushRadius={brushSize}
             />
         </div> 
         </>

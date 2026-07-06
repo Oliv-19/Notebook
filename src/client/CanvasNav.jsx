@@ -1,16 +1,6 @@
-import { useCanvas } from "./CanvasContext"
+import { BrushResize } from "./BrushResize";
+import { ColorChanger } from "./ColorChanger";
 
-function ColorChanger(){
-    const {brushColor, setBrushColor} = useCanvas()
-    const changeColor = (e)=> {
-        setBrushColor(e.target.value)   
-    }
-    return (
-        <>
-            <input type="color" onChange={changeColor} defaultValue={brushColor}/>
-        </>
-    )
-}
 
 export function CanvasNav(){
     return (
@@ -19,7 +9,7 @@ export function CanvasNav(){
             <h1 className="text-white font-medium text-2xl">Notebook</h1>
             <div className="w-100">
                 <ColorChanger />
-
+                <BrushResize />
             </div>
         </nav> 
         </>
