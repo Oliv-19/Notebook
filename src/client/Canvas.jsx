@@ -1,21 +1,29 @@
-import { useState } from "react"
-import { useEffect } from "react"
-import { useRef } from "react"
-import CanvasDraw from "react-canvas-draw"
+import { useState, useEffect, useRef} from "react"
 import { useCanvas } from "./CanvasContext"
+import * as fabric from 'fabric'
 
 export function Canvas(){
-   const {brushColor, brushSize, canvasSize} = useCanvas()
-    
+    const canvasRef = useRef(null)
+    const {brushColor, brushSize, canvasSize} = useCanvas()
+    const [isDrawing, setIsDrawing] = useState(false)
+
+    useEffect(()=> {
+        const canvas = new fabric.Canvas(canvasRef.current, {
+            width: canvasSize.w,
+            height: canvasSize.h,
+            isDrawingMode:true
+        }) 
+        canvas.freeDrawingBrush = new fabric.PencilBrush(canvas)
+        canvas.freeDrawingBrush.color = brushColor
+        canvas.freeDrawingBrush.width = brushSize
+        
+        return () => {canvas.dispose()}
+    },[brushColor, brushSize])
+
     return (
         <>
         <div className="">
-            <CanvasDraw
-            brushColor={brushColor}
-            brushRadius={brushSize}
-            canvasWidth={canvasSize.w}
-            canvasHeight={canvasSize.h}
-            />
+            <canvas ref={canvasRef}/>
         </div> 
         </>
     )
