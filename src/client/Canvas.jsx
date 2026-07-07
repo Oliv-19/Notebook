@@ -5,7 +5,7 @@ import CanvasDraw from "react-canvas-draw"
 import { useCanvas } from "./CanvasContext"
 
 export function Canvas(){
-   const {brushColor, brushSize} = useCanvas()
+   const {brushColor, brushSize, canvasSize} = useCanvas()
     
     return (
         <>
@@ -13,6 +13,8 @@ export function Canvas(){
             <CanvasDraw
             brushColor={brushColor}
             brushRadius={brushSize}
+            canvasWidth={canvasSize.w}
+            canvasHeight={canvasSize.h}
             />
         </div> 
         </>
