@@ -4,8 +4,7 @@ import * as fabric from 'fabric'
 
 export function Canvas(){
     const canvasRef = useRef(null)
-    const {brushColor, brushSize, canvasSize} = useCanvas()
-    const [canvas, setCanvas] = useState(null)
+    const {brushColor, brushSize, canvasSize, undo, canvas, setCanvas} = useCanvas()
 
     useEffect(()=> {
         const dpr = window.devicePixelRatio
@@ -24,7 +23,18 @@ export function Canvas(){
         fabricCanvas.freeDrawingBrush.strokeLineJoin = 'round'
         setCanvas(fabricCanvas)
         
-        return () => {fabricCanvas.dispose()}
+        const handleKeyDown = e => {
+            if((e.ctrlKey || e.metaKey) && e.key == 'z'){
+                e.preventDefault()
+                undo(fabricCanvas)
+            }
+        }
+        document.addEventListener('keydown',handleKeyDown )
+        
+        return () => {
+            fabricCanvas.dispose()
+            document.removeEventListener('keydown',handleKeyDown ) 
+        }
     },[])
     
     useEffect(()=> {
