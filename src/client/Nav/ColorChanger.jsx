@@ -1,4 +1,4 @@
-import { useCanvas } from "../CanvasContext"
+import { useCanvas } from "../Canvas/CanvasContext"
 
 export function ColorChanger(){
     const {brushColor, setBrushColor} = useCanvas()

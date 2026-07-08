@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef} from "react"
 import { useCanvas } from "./CanvasContext"
 import * as fabric from 'fabric'
-import { useShortcut } from "./hooks/index"
+import { useShortcut } from "../hooks/index"
 
 export function Canvas(){
     const canvasRef = useRef(null)

@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useCanvas } from "../CanvasContext"
+import { useCanvas } from "../Canvas/CanvasContext"
 
 export function Button({type}){
     const {undo, redo, canvas} = useCanvas()

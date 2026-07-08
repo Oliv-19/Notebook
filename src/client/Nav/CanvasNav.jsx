@@ -1,5 +1,5 @@
 import { BrushResize } from "./BrushResize";
-import { useCanvas } from "../CanvasContext";
+import { useCanvas } from "../Canvas/CanvasContext";
 import { ColorChanger } from "./ColorChanger";
 import { Button } from "./Buttons";
 
