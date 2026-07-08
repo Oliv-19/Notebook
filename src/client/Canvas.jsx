@@ -4,7 +4,15 @@ import * as fabric from 'fabric'
 
 export function Canvas(){
     const canvasRef = useRef(null)
-    const {brushColor, brushSize, canvasSize, undo, canvas, setCanvas} = useCanvas()
+    const {
+        brushColor, 
+        brushSize, 
+        canvasSize, 
+        undo, 
+        canvas, 
+        setCanvas,
+        saveHistory
+    } = useCanvas()
 
     useEffect(()=> {
         const dpr = window.devicePixelRatio
@@ -22,6 +30,9 @@ export function Canvas(){
         fabricCanvas.freeDrawingBrush.strokeLineCap = 'round'
         fabricCanvas.freeDrawingBrush.strokeLineJoin = 'round'
         setCanvas(fabricCanvas)
+        fabricCanvas.on('path:created', ()=> {
+            saveHistory(fabricCanvas)
+        })
         
         const handleKeyDown = e => {
             if((e.ctrlKey || e.metaKey) && e.key == 'z'){

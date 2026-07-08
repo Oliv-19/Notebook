@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Canvas } from './Canvas'
-import { CanvasNav } from './CanvasNav'
+import { CanvasNav } from './Nav/CanvasNav'
 import { CanvasProvider } from './CanvasContext'
 
 function App() {

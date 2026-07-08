@@ -1,4 +1,4 @@
-import { useCanvas } from "./CanvasContext"
+import { useCanvas } from "../CanvasContext"
 
 export function BrushResize(){
     const {brushSize, setBrushSize} = useCanvas()

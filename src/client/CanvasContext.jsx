@@ -10,16 +10,38 @@ export function CanvasProvider({children}){
     const [brushSize, setBrushSize] = useState('5')
     const [canvasSize, setCanvasSize] = useState({w: 1300, h: 550})
     const [canvas, setCanvas] = useState(null)
+    const [undoStack, setUndoStack] = useState([])
+    const [redoStack, setRedoStack] = useState([])
 
-    const undo = (canvas) => {    
+    const undo = (canvas) => { 
         if(canvas){
             const objects = canvas.getObjects()
             if(objects.length > 0){
-                canvas.remove(objects[objects.length-1])
+                const lastObj = objects[objects.length-1]
+                setRedoStack(prev => [...prev, lastObj])
+                canvas.remove(lastObj)
                 canvas.renderAll()
             }
         }
     }
+
+    const redo = (canvas) => { 
+        if(canvas){
+            if(redoStack.length > 0){
+                const objToRestore = redoStack[redoStack.length-1]
+                setRedoStack(prev => prev.slice(0, -1))
+                canvas.add(objToRestore)
+                canvas.renderAll()
+            }
+        }
+    }
+
+    const saveHistory = (canvas) => {
+        const json = JSON.stringify(canvas.toJSON())
+        setUndoStack(prev => [...prev, json])
+        setRedoStack([])
+    }
+
     const canvasInfo = {
         brushColor,
         setBrushColor,
@@ -27,8 +49,12 @@ export function CanvasProvider({children}){
         setBrushSize,
         canvasSize,
         undo,
+        redo,
         canvas,
-        setCanvas
+        setCanvas,
+        setUndoStack,
+        setRedoStack,
+        saveHistory
     }
     return (
         <CanvasContext value={canvasInfo}>
