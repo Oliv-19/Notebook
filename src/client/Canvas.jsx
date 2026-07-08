@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef} from "react"
 import { useCanvas } from "./CanvasContext"
 import * as fabric from 'fabric'
+import { useShortcut } from "./hooks/index"
 
 export function Canvas(){
     const canvasRef = useRef(null)
@@ -9,10 +10,13 @@ export function Canvas(){
         brushSize, 
         canvasSize, 
         undo, 
+        redo,
         canvas, 
         setCanvas,
         saveHistory
     } = useCanvas()
+    useShortcut('ctrl+z', ()=>{undo(canvas)})
+    useShortcut('ctrl+y', ()=>{redo(canvas)})
 
     useEffect(()=> {
         const dpr = window.devicePixelRatio
@@ -34,17 +38,8 @@ export function Canvas(){
             saveHistory(fabricCanvas)
         })
         
-        const handleKeyDown = e => {
-            if((e.ctrlKey || e.metaKey) && e.key == 'z'){
-                e.preventDefault()
-                undo(fabricCanvas)
-            }
-        }
-        document.addEventListener('keydown',handleKeyDown )
-        
         return () => {
             fabricCanvas.dispose()
-            document.removeEventListener('keydown',handleKeyDown ) 
         }
     },[])
     
