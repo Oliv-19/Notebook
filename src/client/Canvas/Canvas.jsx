@@ -34,7 +34,12 @@ export function Canvas(){
         fabricCanvas.freeDrawingBrush.strokeLineCap = 'round'
         fabricCanvas.freeDrawingBrush.strokeLineJoin = 'round'
         setCanvas(fabricCanvas)
-        fabricCanvas.on('path:created', ()=> {
+        fabricCanvas.on('path:created', (e)=> {
+            const path = e.path
+            path.set({
+                selectable: true,
+                evented: true
+            })
             saveHistory(fabricCanvas)
         })
         

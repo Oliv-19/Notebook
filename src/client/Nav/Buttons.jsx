@@ -2,11 +2,16 @@ import { useState } from "react"
 import { useCanvas } from "../Canvas/CanvasContext"
 
 export function Button({type}){
-    const {undo, redo, canvas} = useCanvas()
+    const {undo, redo} = useCanvas()
+    const events = {
+        undo: () => {undo()},
+        redo: ()=>  {redo()}
+    }
+    
     return (
         <>
         <button 
-            onClick={()=> {type == 'undo' ? undo(canvas) : redo(canvas)}}>
+            onClick={events[type]}>
             {type}
         </button>
         </>

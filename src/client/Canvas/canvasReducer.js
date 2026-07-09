@@ -38,7 +38,7 @@ export function canvasReducer(state, action){
                     canvas.renderAll()
                     return {
                         ...state,
-                        redoStack: state.undoStack.slice(0, -1),
+                        redoStack: redoStack.slice(0, -1),
                     }
                 }
             }

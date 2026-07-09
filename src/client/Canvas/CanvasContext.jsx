@@ -13,12 +13,11 @@ const initialState = {
 
 export function CanvasProvider({children}){
     const [canvasSize, setCanvasSize] = useState({w: 1300, h: 550})
-    const [{
+    const [state, dispatch] = useReducer(canvasReducer, initialState)
+    const {
         brushColor, 
         brushSize, 
-        canvas}, 
-        dispatch] = useReducer(canvasReducer, initialState)
-
+        canvas} = state
     const setFunction = (type, payload)=> {
         dispatch({type, payload})
     }
@@ -29,8 +28,8 @@ export function CanvasProvider({children}){
         brushSize: brushSize,
         setBrushSize: (size) => {setFunction('SET_BRUSH_SIZE', size)},
         canvasSize,
-        undo: ()=> {setFunction('UNDO')},
-        redo: ()=> {setFunction('REDO')},
+        undo: ()=> {setFunction('UNDO', state)},
+        redo: ()=> {setFunction('REDO', state)},
         canvas: canvas,
         setCanvas: (canvas)=> {setFunction('SET_CANVAS', canvas)},
         saveHistory: (canvas)=> {
