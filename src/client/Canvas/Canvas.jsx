@@ -13,10 +13,13 @@ export function Canvas(){
         redo,
         canvas, 
         setCanvas,
-        saveHistory
+        saveHistory,
+        selectMode
     } = useCanvas()
     useShortcut('ctrl+z', ()=>{undo(canvas)})
     useShortcut('ctrl+y', ()=>{redo(canvas)})
+    useShortcut('v', ()=>{selectMode(true)})
+    useShortcut('b', ()=>{selectMode(false)})
 
     useEffect(()=> {
         const dpr = window.devicePixelRatio

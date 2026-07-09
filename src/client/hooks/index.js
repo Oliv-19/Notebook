@@ -25,6 +25,9 @@ export function useShortcut(shortcut, callback){
             }
         }
        }
+       if(shortcut == e.key){
+        return callbackRef.current()
+       }
         
     },[]) 
 
