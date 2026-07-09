@@ -11,6 +11,7 @@ export function CanvasNav(){
             <h1 className="text-white font-medium text-2xl">Notebook</h1>
             <div className="w-100">
                 <Button type={'select'}/>
+                <Button type={'delete'}/>
                 <Button type={'draw'}/>
                 <Button type={'undo'}/>
                 <Button type={'redo'}/>

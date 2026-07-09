@@ -48,7 +48,8 @@ export function CanvasProvider({children}){
             setCanvas('SAVE_HISTORY', json)
         },
         selectMode: (isSelection)=> {setCanvas('SELECT_MODE', isSelection)},
-        isSelectionMode: isSelection
+        isSelectionMode: isSelection,
+        deleteSelection : () => {setCanvas('DELETE', canvasState)}
     }
     return (
         <CanvasContext value={canvasInfo}>

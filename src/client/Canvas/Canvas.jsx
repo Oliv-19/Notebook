@@ -14,17 +14,17 @@ export function Canvas(){
         canvas, 
         setCanvas,
         saveHistory,
-        selectMode
+        selectMode,
+        deleteSelection
     } = useCanvas()
-    useShortcut('ctrl+z', ()=>{undo(canvas)})
-    useShortcut('ctrl+y', ()=>{redo(canvas)})
-    useShortcut('v', ()=>{selectMode(true)})
-    useShortcut('b', ()=>{selectMode(false)})
-    useShortcut('space', ()=>{selectMode(true)}, ()=> {
-        selectMode(false)
-        canvas.discardActiveObject()
-        canvas.renderAll()
-    })
+    const keyDownMap= {
+        'ctrl+z': ()=>{undo(canvas)},
+        'ctrl+y': ()=>{redo(canvas)},
+        'v': ()=>{selectMode(true)},
+        'b': ()=>{selectMode(false)},
+        'Delete': ()=>{deleteSelection()},
+    }
+    useShortcut(keyDownMap)
 
     useEffect(()=> {
         const dpr = window.devicePixelRatio

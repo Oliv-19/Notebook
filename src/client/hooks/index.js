@@ -2,54 +2,42 @@ import { useCallback } from "react";
 import { useEffect } from "react";
 import { useLayoutEffect } from "react";
 import { useRef } from "react";
+import { useCanvas } from "../Canvas/CanvasContext";
 
-export function useShortcut(shortcut, callback, callbackKeyUp= null){
-    const callbackRef  = useRef(callback)
-    const callbackKeyUpRef  = useRef(callbackKeyUp)
+export function useShortcut(keyDownMap){
+    const mapRef  = useRef(keyDownMap)
     useLayoutEffect(()=>{
-        callbackRef.current = callback
-        callbackKeyUpRef.current = callbackKeyUp
+        mapRef.current = keyDownMap
     })
-
     const handleKeyDown = useCallback(e => {
+        e.preventDefault()
         const modifiers= {
             ctrl: e.ctrlKey,
             alt: e.altKey,
             cmd: e.metaKey,
             shift: e.shiftKey
         }
-       if(shortcut.includes('+')){
-        const keyArray = shortcut.split('+')
-        if(Object.keys(modifiers).includes(keyArray[0])){
-            const finalKey = keyArray.pop()
-            if(keyArray.every(k=> modifiers[k]) && finalKey === e.key){
-                return callbackRef.current()
+        Object.entries(mapRef.current).forEach(([shortcut, callback])=> {
+            if(shortcut.includes('+')){
+                const keysArray = shortcut.split('+')
+                if(modifiers[keysArray[0]] && e.key == keysArray[1]){
+                    return callback()
+                }
             }
-        }
-       }
-       if(shortcut == e.key || (shortcut == 'space' && e.code== 'Space')){
-        return callbackRef.current()
-       }
-        
+            
+            if(shortcut == e.key || shortcut == e.code){
+                return callback()
+            }
+        })
     },[]) 
-    const handleKeyUp = useCallback(e => {
-        if(shortcut == e.key || (shortcut == 'space' && e.code== 'Space')){
-            return callbackKeyUpRef.current()
+    
+    useEffect(()=> {
+        document.addEventListener('keydown',handleKeyDown )
+        return () => {
+            document.removeEventListener('keydown',handleKeyDown ) 
         }
         
     },[])
-
-    useEffect(()=> {
-       document.addEventListener('keydown',handleKeyDown )
-       if(callbackKeyUp){
-           document.addEventListener('keyup',handleKeyUp )
-       }
-       return () => {
-            document.removeEventListener('keydown',handleKeyDown ) 
-            if(callbackKeyUp){
-                document.removeEventListener('keyup', handleKeyUp ) 
-            }
-       }
-        
-    },[handleKeyDown])
 }
+
+

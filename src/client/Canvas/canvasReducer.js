@@ -74,6 +74,19 @@ export function canvasInstanceReducer(state, action){
             }
             break
         }
+        case 'DELETE':{
+            const {canvas} = state
+            if(canvas){
+                const activeObjects = canvas.getActiveObjects()
+                if(activeObjects.length > 0){
+                    canvas.discardActiveObject()
+                    activeObjects.forEach(obj => {
+                        canvas.remove(obj)
+                    })
+                    canvas.renderAll()
+                }
+            }
+        }
         
             
         default:
