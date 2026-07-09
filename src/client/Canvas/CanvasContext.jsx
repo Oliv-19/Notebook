@@ -1,41 +1,54 @@
 import { useReducer } from "react"
 import { useState, useEffect, createContext, useContext } from "react"
-import { canvasReducer } from "./canvasReducer"
+import { canvasInstanceReducer, canvasSettingsReducer } from "./canvasReducer"
 
 const CanvasContext = createContext()
-const initialState = {
+const initStateSettings = {
     brushColor:'#000000',
     brushSize: 5,
+}
+const initStateCanvas = {
     canvas: null,
     undoStack: [],
-    redoStack: []
+    redoStack: [],
+    isSelection: false
 }
+
 
 export function CanvasProvider({children}){
     const [canvasSize, setCanvasSize] = useState({w: 1300, h: 550})
-    const [state, dispatch] = useReducer(canvasReducer, initialState)
+    const [stateSettings, dispatchSetting] = useReducer(canvasSettingsReducer, initStateSettings)
+    const [canvasState, dispatchCanvas] = useReducer(canvasInstanceReducer, initStateCanvas)
+    
     const {
         brushColor, 
-        brushSize, 
-        canvas} = state
-    const setFunction = (type, payload)=> {
-        dispatch({type, payload})
+        brushSize } = stateSettings
+    const {
+        canvas,
+        isSelection} = canvasState
+    const setSettings = (type, payload)=> {
+        dispatchSetting({type, payload})
+    }
+    const setCanvas = (type, payload)=> {
+        dispatchCanvas({type, payload})
     }
 
     const canvasInfo = {
         brushColor:brushColor,
-        setBrushColor: (color)=> {setFunction('SET_BRUSH_COLOR', color)},
+        setBrushColor: (color)=> {setSettings('SET_BRUSH_COLOR', color)},
         brushSize: brushSize,
-        setBrushSize: (size) => {setFunction('SET_BRUSH_SIZE', size)},
+        setBrushSize: (size) => {setSettings('SET_BRUSH_SIZE', size)},
         canvasSize,
-        undo: ()=> {setFunction('UNDO', state)},
-        redo: ()=> {setFunction('REDO', state)},
+        undo: ()=> {setCanvas('UNDO', canvasState)},
+        redo: ()=> {setCanvas('REDO', canvasState)},
         canvas: canvas,
-        setCanvas: (canvas)=> {setFunction('SET_CANVAS', canvas)},
+        setCanvas: (canvas)=> {setCanvas('SET_CANVAS', canvas)},
         saveHistory: (canvas)=> {
             const json = JSON.stringify(canvas.toJSON())
-            setFunction('SAVE_HISTORY', json)
-        }
+            setCanvas('SAVE_HISTORY', json)
+        },
+        selectMode: (isSelection)=> {setCanvas('SELECT_MODE', isSelection)},
+        isSelectionMode: isSelection
     }
     return (
         <CanvasContext value={canvasInfo}>

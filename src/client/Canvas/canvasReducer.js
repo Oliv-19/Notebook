@@ -1,15 +1,23 @@
 
 
-export function canvasReducer(state, action){
+export function canvasSettingsReducer(state, action){
     switch(action.type){
-        case 'SET_CANVAS':
-            return {...state, canvas: action.payload}
-            break
         case 'SET_BRUSH_COLOR':
             return {...state, brushColor: action.payload}
             break
         case 'SET_BRUSH_SIZE':
             return {...state, brushSize: action.payload}
+            break  
+        default:
+            return state
+            break
+        }
+        }
+        
+export function canvasInstanceReducer(state, action){
+    switch(action.type){
+        case 'SET_CANVAS':
+            return {...state, canvas: action.payload}
             break
         case 'UNDO': {
             const {canvas} = state
@@ -45,7 +53,7 @@ export function canvasReducer(state, action){
             break
         }
         case 'SAVE_HISTORY':{
-            const {canvas, undoStack, redoStack} = state
+            const {canvas, undoStack} = state
             if(canvas == action.payload) return state
             return {
                 ...state,
@@ -54,6 +62,19 @@ export function canvasReducer(state, action){
             }
             break
         }
+        case 'SELECT_MODE': {
+            const {canvas} = state
+            if(canvas){
+                canvas.isDrawingMode = !action.payload
+                canvas.selection = action.payload
+                return {
+                    ...state,
+                    isSelection : action.payload
+                }
+            }
+            break
+        }
+        
             
         default:
             return state
