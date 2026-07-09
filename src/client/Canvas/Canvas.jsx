@@ -20,6 +20,11 @@ export function Canvas(){
     useShortcut('ctrl+y', ()=>{redo(canvas)})
     useShortcut('v', ()=>{selectMode(true)})
     useShortcut('b', ()=>{selectMode(false)})
+    useShortcut('space', ()=>{selectMode(true)}, ()=> {
+        selectMode(false)
+        canvas.discardActiveObject()
+        canvas.renderAll()
+    })
 
     useEffect(()=> {
         const dpr = window.devicePixelRatio

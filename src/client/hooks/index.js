@@ -3,10 +3,12 @@ import { useEffect } from "react";
 import { useLayoutEffect } from "react";
 import { useRef } from "react";
 
-export function useShortcut(shortcut, callback){
+export function useShortcut(shortcut, callback, callbackKeyUp= null){
     const callbackRef  = useRef(callback)
+    const callbackKeyUpRef  = useRef(callbackKeyUp)
     useLayoutEffect(()=>{
         callbackRef.current = callback
+        callbackKeyUpRef.current = callbackKeyUp
     })
 
     const handleKeyDown = useCallback(e => {
@@ -25,15 +27,29 @@ export function useShortcut(shortcut, callback){
             }
         }
        }
-       if(shortcut == e.key){
+       if(shortcut == e.key || (shortcut == 'space' && e.code== 'Space')){
         return callbackRef.current()
        }
         
     },[]) 
+    const handleKeyUp = useCallback(e => {
+        if(shortcut == e.key || (shortcut == 'space' && e.code== 'Space')){
+            return callbackKeyUpRef.current()
+        }
+        
+    },[])
 
     useEffect(()=> {
        document.addEventListener('keydown',handleKeyDown )
-       return () => document.removeEventListener('keydown',handleKeyDown ) 
+       if(callbackKeyUp){
+           document.addEventListener('keyup',handleKeyUp )
+       }
+       return () => {
+            document.removeEventListener('keydown',handleKeyDown ) 
+            if(callbackKeyUp){
+                document.removeEventListener('keyup', handleKeyUp ) 
+            }
+       }
         
     },[handleKeyDown])
 }
