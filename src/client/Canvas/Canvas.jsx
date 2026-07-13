@@ -15,7 +15,9 @@ export function Canvas(){
         setCanvas,
         saveHistory,
         selectMode,
-        deleteSelection
+        deleteSelection,
+        loadBgImg,
+        pdfPages
     } = useCanvas()
     const keyDownMap= {
         'ctrl+z': ()=>{undo(canvas)},
@@ -60,10 +62,14 @@ export function Canvas(){
         if(canvas){
             canvas.freeDrawingBrush = new fabric.PencilBrush(canvas)
             canvas.freeDrawingBrush.color = brushColor
-            canvas.freeDrawingBrush.width = parseInt(brushSize, 10)
+            canvas.freeDrawingBrush.width = parseInt(brushSize, 10) 
+            
+            loadBgImg(pdfPages[0])
+            
+            
         }
 
-    },[brushColor, brushSize])
+    },[brushColor, brushSize, pdfPages])
 
     return (
         <>

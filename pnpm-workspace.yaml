@@ -1,2 +1,5 @@
 allowBuilds:
   canvas: false
+  esbuild: true
+  sharp: true
+  workerd: true

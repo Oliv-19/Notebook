@@ -1,6 +1,6 @@
 import { useReducer } from "react"
 import { useState, useEffect, createContext, useContext } from "react"
-import { canvasInstanceReducer, canvasSettingsReducer } from "./canvasReducer"
+import { canvasInstanceReducer, canvasSettingsReducer, pdfReducer } from "./canvasReducer"
 
 const CanvasContext = createContext()
 const initStateSettings = {
@@ -9,28 +9,41 @@ const initStateSettings = {
 }
 const initStateCanvas = {
     canvas: null,
+    dimensions: {w: 1300, h: 550},
     undoStack: [],
     redoStack: [],
     isSelection: false
 }
+const initStatePdf = {
+    pages: []
+}
 
 
 export function CanvasProvider({children}){
-    const [canvasSize, setCanvasSize] = useState({w: 1300, h: 550})
     const [stateSettings, dispatchSetting] = useReducer(canvasSettingsReducer, initStateSettings)
     const [canvasState, dispatchCanvas] = useReducer(canvasInstanceReducer, initStateCanvas)
+    const [pdfState, dispatchPdf] = useReducer(pdfReducer, initStatePdf)
+    console.log(pdfState);
     
     const {
         brushColor, 
         brushSize } = stateSettings
     const {
         canvas,
+        dimensions,
         isSelection} = canvasState
+    const {
+        pages
+    }= pdfState
+    
     const setSettings = (type, payload)=> {
         dispatchSetting({type, payload})
     }
     const setCanvas = (type, payload)=> {
         dispatchCanvas({type, payload})
+    }
+    const setPDF = (type, payload)=> {
+        dispatchPdf({type, payload})
     }
 
     const canvasInfo = {
@@ -38,7 +51,8 @@ export function CanvasProvider({children}){
         setBrushColor: (color)=> {setSettings('SET_BRUSH_COLOR', color)},
         brushSize: brushSize,
         setBrushSize: (size) => {setSettings('SET_BRUSH_SIZE', size)},
-        canvasSize,
+        canvasSize: dimensions,
+        setCanvasSize: (width, height)=> {setCanvas('SET_DIMENSIONS', {width, height})},
         undo: ()=> {setCanvas('UNDO', canvasState)},
         redo: ()=> {setCanvas('REDO', canvasState)},
         canvas: canvas,
@@ -49,7 +63,11 @@ export function CanvasProvider({children}){
         },
         selectMode: (isSelection)=> {setCanvas('SELECT_MODE', isSelection)},
         isSelectionMode: isSelection,
-        deleteSelection : () => {setCanvas('DELETE', canvasState)}
+        deleteSelection : () => {setCanvas('DELETE', canvasState)},
+        loadBgImg: (imageUrl)=> {setCanvas('LOAD_BG', imageUrl)},
+        convertPdf: (file)=> {setPDF('UPLOAD_PDF', file)},
+        pdfPages: pages
+
     }
     return (
         <CanvasContext value={canvasInfo}>

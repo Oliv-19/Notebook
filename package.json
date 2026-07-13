@@ -5,16 +5,20 @@
   "type": "module",
   "scripts": {
     "client": "vite",
+    "worker": "pnpm run build && wrangler dev",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.2",
+    "dotenv": "^17.4.2",
     "fabric": "^7.4.0",
+    "hono": "^4.12.29",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "tailwindcss": "^4.3.2"
+    "tailwindcss": "^4.3.2",
+    "wrangler": "^4.110.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

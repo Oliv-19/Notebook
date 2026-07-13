@@ -1,4 +1,5 @@
-
+import { uploadPdf } from "../services/pdfs"
+import * as fabric from 'fabric'
 
 export function canvasSettingsReducer(state, action){
     switch(action.type){
@@ -19,7 +20,10 @@ export function canvasInstanceReducer(state, action){
         case 'SET_CANVAS':
             return {...state, canvas: action.payload}
             break
-        case 'UNDO': {
+        case 'SET_DIMENSIONS':
+            const {width, height} = action.payload
+            return {...state, dimensions:{w: width, h: height}}
+            case 'UNDO': {
             const {canvas} = state
             if(canvas){
                 const objects = canvas.getObjects()
@@ -87,8 +91,51 @@ export function canvasInstanceReducer(state, action){
                 }
             }
         }
-        
+        case 'LOAD_BG':{
+            const {canvas} = state
+            const imageUrl = action.payload
+            if(canvas){
+                console.log('idk');
+                fabric.FabricImage.fromURL(imageUrl)
+                    .then(img => {
+                            img.set({
+                                left: 320,
+                                top: 450,
+                                scaleX: 0.5,
+                                scaleY: 0.5,
+                            })
+                            canvas.setDimensions({
+                                width: canvas.width + img.width,
+                                height: canvas.height + img.height
+                            })
+                            canvas.backgroundImage = img
+                            canvas.renderAll()
+                        }
+                    )
+                    .catch(err=> console.error('Error loading page:', err))
+                return state
+            }
+        }
             
+        default:
+            return state
+            break
+    }
+}
+
+export function pdfReducer(state, action) {
+    switch(action.type){
+        case 'UPLOAD_PDF':{
+            const data = action.payload
+            try {
+                if(data){
+                    return {...state, pages: data}
+                }
+                return {...state, pages: []}
+            } catch (error){
+                console.error(error)
+            }
+        }
         default:
             return state
             break
