@@ -31,8 +31,8 @@ export function Canvas(){
     useEffect(()=> {
         const dpr = window.devicePixelRatio
         const fabricCanvas = new fabric.Canvas(canvasRef.current, {
-            width: canvasSize.w * dpr,
-            height: canvasSize.h * dpr,
+            width: 1300 * dpr,
+            height: 550 * dpr,
             isDrawingMode:true,
             enableRetinaScaling: true,
         }) 
@@ -58,17 +58,37 @@ export function Canvas(){
         }
     },[])
     
+    const loadPdfBg = async ()=>{
+        let currentTop = 450
+        for (const page of pdfPages){
+            const img = await fabric.FabricImage.fromURL(page)
+            img.set({
+                left: 320,
+                top: currentTop,
+                selectable: false,
+                evented:false,
+                hasControls: false,
+                hasBorders: false,
+                lockMovementX: true,
+                lockMovementY: true,
+                scaleX: 0.5,
+                scaleY: 0.5,
+            })
+            currentTop = currentTop + img.height * img.scaleY
+            canvas.setDimensions({
+                height: currentTop
+            })
+            canvas.add(img)
+        }            
+        canvas.renderAll()
+    }
     useEffect(()=> {
         if(canvas){
-            canvas.freeDrawingBrush = new fabric.PencilBrush(canvas)
-            canvas.freeDrawingBrush.color = brushColor
-            canvas.freeDrawingBrush.width = parseInt(brushSize, 10) 
-            
-            loadBgImg(pdfPages[0])
-            
-            
+        canvas.freeDrawingBrush = new fabric.PencilBrush(canvas)
+        canvas.freeDrawingBrush.color = brushColor
+        canvas.freeDrawingBrush.width = parseInt(brushSize, 10) 
+        loadPdfBg()
         }
-
     },[brushColor, brushSize, pdfPages])
 
     return (

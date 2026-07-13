@@ -9,7 +9,7 @@ const initStateSettings = {
 }
 const initStateCanvas = {
     canvas: null,
-    dimensions: {w: 1300, h: 550},
+    currentTop: 450,
     undoStack: [],
     redoStack: [],
     isSelection: false
@@ -30,7 +30,6 @@ export function CanvasProvider({children}){
         brushSize } = stateSettings
     const {
         canvas,
-        dimensions,
         isSelection} = canvasState
     const {
         pages
@@ -51,7 +50,6 @@ export function CanvasProvider({children}){
         setBrushColor: (color)=> {setSettings('SET_BRUSH_COLOR', color)},
         brushSize: brushSize,
         setBrushSize: (size) => {setSettings('SET_BRUSH_SIZE', size)},
-        canvasSize: dimensions,
         setCanvasSize: (width, height)=> {setCanvas('SET_DIMENSIONS', {width, height})},
         undo: ()=> {setCanvas('UNDO', canvasState)},
         redo: ()=> {setCanvas('REDO', canvasState)},
@@ -64,7 +62,6 @@ export function CanvasProvider({children}){
         selectMode: (isSelection)=> {setCanvas('SELECT_MODE', isSelection)},
         isSelectionMode: isSelection,
         deleteSelection : () => {setCanvas('DELETE', canvasState)},
-        loadBgImg: (imageUrl)=> {setCanvas('LOAD_BG', imageUrl)},
         convertPdf: (file)=> {setPDF('UPLOAD_PDF', file)},
         pdfPages: pages
 

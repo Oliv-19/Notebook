@@ -90,33 +90,7 @@ export function canvasInstanceReducer(state, action){
                     canvas.renderAll()
                 }
             }
-        }
-        case 'LOAD_BG':{
-            const {canvas} = state
-            const imageUrl = action.payload
-            if(canvas){
-                console.log('idk');
-                fabric.FabricImage.fromURL(imageUrl)
-                    .then(img => {
-                            img.set({
-                                left: 320,
-                                top: 450,
-                                scaleX: 0.5,
-                                scaleY: 0.5,
-                            })
-                            canvas.setDimensions({
-                                width: canvas.width + img.width,
-                                height: canvas.height + img.height
-                            })
-                            canvas.backgroundImage = img
-                            canvas.renderAll()
-                        }
-                    )
-                    .catch(err=> console.error('Error loading page:', err))
-                return state
-            }
-        }
-            
+        }   
         default:
             return state
             break
