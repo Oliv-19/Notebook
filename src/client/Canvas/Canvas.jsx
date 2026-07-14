@@ -16,8 +16,7 @@ export function Canvas(){
         saveHistory,
         selectMode,
         deleteSelection,
-        loadBgImg,
-        pdfPages
+        pdf
     } = useCanvas()
     const keyDownMap= {
         'ctrl+z': ()=>{undo(canvas)},
@@ -57,44 +56,22 @@ export function Canvas(){
             fabricCanvas.dispose()
         }
     },[])
-    
-    const loadPdfBg = async ()=>{
-        let currentTop = 450
-        for (const page of pdfPages){
-            const img = await fabric.FabricImage.fromURL(page)
-            img.set({
-                left: 320,
-                top: currentTop,
-                selectable: false,
-                evented:false,
-                hasControls: false,
-                hasBorders: false,
-                lockMovementX: true,
-                lockMovementY: true,
-                scaleX: 0.5,
-                scaleY: 0.5,
-            })
-            currentTop = currentTop + img.height * img.scaleY
-            canvas.setDimensions({
-                height: currentTop
-            })
-            canvas.add(img)
-        }            
-        canvas.renderAll()
-    }
     useEffect(()=> {
         if(canvas){
         canvas.freeDrawingBrush = new fabric.PencilBrush(canvas)
         canvas.freeDrawingBrush.color = brushColor
         canvas.freeDrawingBrush.width = parseInt(brushSize, 10) 
-        loadPdfBg()
         }
-    },[brushColor, brushSize, pdfPages])
+    },[brushColor, brushSize])
 
     return (
         <>
         <div className="">
+            <div className="relative">
             <canvas ref={canvasRef}/>
+            {pdf && <iframe src={pdf} className="absolute top-0 w-150 h-full" 
+            frameborder="0" />}
+            </div>
         </div> 
         </>
     )

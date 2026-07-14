@@ -15,7 +15,7 @@ const initStateCanvas = {
     isSelection: false
 }
 const initStatePdf = {
-    pages: []
+    pdf: null
 }
 
 
@@ -23,7 +23,6 @@ export function CanvasProvider({children}){
     const [stateSettings, dispatchSetting] = useReducer(canvasSettingsReducer, initStateSettings)
     const [canvasState, dispatchCanvas] = useReducer(canvasInstanceReducer, initStateCanvas)
     const [pdfState, dispatchPdf] = useReducer(pdfReducer, initStatePdf)
-    console.log(pdfState);
     
     const {
         brushColor, 
@@ -31,9 +30,7 @@ export function CanvasProvider({children}){
     const {
         canvas,
         isSelection} = canvasState
-    const {
-        pages
-    }= pdfState
+    const { pdf }= pdfState
     
     const setSettings = (type, payload)=> {
         dispatchSetting({type, payload})
@@ -62,9 +59,8 @@ export function CanvasProvider({children}){
         selectMode: (isSelection)=> {setCanvas('SELECT_MODE', isSelection)},
         isSelectionMode: isSelection,
         deleteSelection : () => {setCanvas('DELETE', canvasState)},
-        convertPdf: (file)=> {setPDF('UPLOAD_PDF', file)},
-        pdfPages: pages
-
+        uploadPdf: (url)=> {setPDF('UPLOAD_PDF', url)},
+        pdf
     }
     return (
         <CanvasContext value={canvasInfo}>

@@ -1,17 +1,14 @@
 import { useCanvas } from "../Canvas/CanvasContext";
 import * as fabric from 'fabric'
-import { uploadPdf } from "../services/pdfs";
 
 export function ImportPDF(){
-    const {convertPdf} = useCanvas()
+    const {uploadPdf} = useCanvas()
     const  upload = async(e)=> {
         e.preventDefault()
         const file = e.target.files[0]
-        if(file) {
-            const formData = new FormData()
-            formData.append('pdf', file)
-            const data = await uploadPdf(formData)
-            convertPdf(data)
+        if(file && file.type == 'application/pdf') {
+            const url = URL.createObjectURL(file)
+            uploadPdf(url)
 
         } 
     }

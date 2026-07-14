@@ -1,4 +1,3 @@
-import { uploadPdf } from "../services/pdfs"
 import * as fabric from 'fabric'
 
 export function canvasSettingsReducer(state, action){
@@ -101,14 +100,7 @@ export function pdfReducer(state, action) {
     switch(action.type){
         case 'UPLOAD_PDF':{
             const data = action.payload
-            try {
-                if(data){
-                    return {...state, pages: data}
-                }
-                return {...state, pages: []}
-            } catch (error){
-                console.error(error)
-            }
+            return {...state, pdf: data}
         }
         default:
             return state
