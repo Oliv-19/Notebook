@@ -10,6 +10,8 @@ export function useShortcut(keyDownMap){
         mapRef.current = keyDownMap
     })
     const handleKeyDown = useCallback(e => {
+        const target = e.target.tagName.toLowerCase()
+        if (target === 'input' || target === 'textarea') return
         e.preventDefault()
         const modifiers= {
             ctrl: e.ctrlKey,

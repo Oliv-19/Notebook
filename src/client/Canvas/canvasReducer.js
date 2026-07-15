@@ -100,7 +100,8 @@ export function pdfReducer(state, action) {
     switch(action.type){
         case 'UPLOAD_PDF':{
             const data = action.payload
-            return {...state, pdf: data}
+            const url = URL.createObjectURL(data)
+            return {...state, pdf: url}
         }
         default:
             return state

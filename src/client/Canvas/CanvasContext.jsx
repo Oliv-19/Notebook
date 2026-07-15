@@ -27,6 +27,7 @@ export function CanvasProvider({children}){
         dispatchCanvas({type, payload})
     }
     const setPDF = (type, payload)=> {
+        URL.revokeObjectURL(pdf)
         dispatchPdf({type, payload})
     }
 
