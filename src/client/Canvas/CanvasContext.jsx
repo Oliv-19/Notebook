@@ -1,14 +1,11 @@
 import { useReducer } from "react"
 import { useState, useEffect, createContext, useContext } from "react"
-import { canvasInstanceReducer, canvasSettingsReducer, pdfReducer } from "./canvasReducer"
+import { canvasInstanceReducer, pdfReducer } from "./canvasReducer"
 
 const CanvasContext = createContext()
-const initStateSettings = {
-    brushColor:'#000000',
-    brushSize: 5,
-}
 const initStateCanvas = {
     canvas: null,
+    dimensions:{w: 1300, h:450},
     currentTop: 450,
     undoStack: [],
     redoStack: [],
@@ -20,21 +17,12 @@ const initStatePdf = {
 
 
 export function CanvasProvider({children}){
-    const [stateSettings, dispatchSetting] = useReducer(canvasSettingsReducer, initStateSettings)
     const [canvasState, dispatchCanvas] = useReducer(canvasInstanceReducer, initStateCanvas)
     const [pdfState, dispatchPdf] = useReducer(pdfReducer, initStatePdf)
     
-    const {
-        brushColor, 
-        brushSize } = stateSettings
-    const {
-        canvas,
-        isSelection} = canvasState
+    const { canvas, isSelection} = canvasState
     const { pdf }= pdfState
     
-    const setSettings = (type, payload)=> {
-        dispatchSetting({type, payload})
-    }
     const setCanvas = (type, payload)=> {
         dispatchCanvas({type, payload})
     }
@@ -43,10 +31,6 @@ export function CanvasProvider({children}){
     }
 
     const canvasInfo = {
-        brushColor:brushColor,
-        setBrushColor: (color)=> {setSettings('SET_BRUSH_COLOR', color)},
-        brushSize: brushSize,
-        setBrushSize: (size) => {setSettings('SET_BRUSH_SIZE', size)},
         setCanvasSize: (width, height)=> {setCanvas('SET_DIMENSIONS', {width, height})},
         undo: ()=> {setCanvas('UNDO', canvasState)},
         redo: ()=> {setCanvas('REDO', canvasState)},

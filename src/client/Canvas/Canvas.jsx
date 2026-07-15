@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef} from "react"
+import { useEffect, useRef} from "react"
 import { useCanvas } from "./CanvasContext"
 import * as fabric from 'fabric'
 import { useShortcut } from "../hooks/index"
@@ -6,17 +6,13 @@ import { useShortcut } from "../hooks/index"
 export function Canvas(){
     const canvasRef = useRef(null)
     const {
-        brushColor, 
-        brushSize, 
-        canvasSize, 
         undo, 
         redo,
         canvas, 
         setCanvas,
         saveHistory,
         selectMode,
-        deleteSelection,
-        pdf
+        deleteSelection
     } = useCanvas()
     const keyDownMap= {
         'ctrl+z': ()=>{undo(canvas)},
@@ -38,8 +34,8 @@ export function Canvas(){
         fabricCanvas.setZoom(dpr)
         fabricCanvas.freeDrawingBrush = new fabric.PencilBrush(fabricCanvas)
         fabricCanvas.freeDrawingBrush.decimate = 8
-        fabricCanvas.freeDrawingBrush.color = brushColor
-        fabricCanvas.freeDrawingBrush.width = parseInt(brushSize, 10)
+        fabricCanvas.freeDrawingBrush.color = '#000000'
+        fabricCanvas.freeDrawingBrush.width = 5
         fabricCanvas.freeDrawingBrush.strokeLineCap = 'round'
         fabricCanvas.freeDrawingBrush.strokeLineJoin = 'round'
         setCanvas(fabricCanvas)
@@ -56,22 +52,11 @@ export function Canvas(){
             fabricCanvas.dispose()
         }
     },[])
-    useEffect(()=> {
-        if(canvas){
-        canvas.freeDrawingBrush = new fabric.PencilBrush(canvas)
-        canvas.freeDrawingBrush.color = brushColor
-        canvas.freeDrawingBrush.width = parseInt(brushSize, 10) 
-        }
-    },[brushColor, brushSize])
 
     return (
         <>
         <div className="">
-            <div className="relative">
-            <canvas ref={canvasRef}/>
-            {pdf && <iframe src={pdf} className="absolute top-0 w-150 h-full" 
-            frameborder="0" />}
-            </div>
+            <canvas className="border-2" ref={canvasRef}/>
         </div> 
         </>
     )

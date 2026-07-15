@@ -1,7 +1,7 @@
-import { useCanvas } from "../Canvas/CanvasContext"
+import { useCanvasSettings } from "../Canvas/CanvasSettingsContext"
 
 export function ColorChanger(){
-    const {brushColor, setBrushColor} = useCanvas()
+    const {brushColor, setBrushColor} = useCanvasSettings()
     const changeColor = (e)=> {
         setBrushColor(e.target.value)   
     }
