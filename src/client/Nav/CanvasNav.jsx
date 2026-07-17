@@ -3,6 +3,7 @@ import { useCanvas } from "../Canvas/CanvasContext";
 import { ColorChanger } from "./ColorChanger";
 import { Button } from "./Buttons";
 import { ImportPDF } from "./ImportPDF";
+import { SaveButton } from "./SaveButton";
 
 
 export function CanvasNav(){
@@ -10,7 +11,8 @@ export function CanvasNav(){
         <>
         <nav className="bg-(--green) p-3 flex justify-between">
             <h1 className="text-white font-medium text-2xl">Notebook</h1>
-            <div className="w-100 flex gap-2">
+            <div className="flex gap-2">
+                <SaveButton/>
                 <ImportPDF/>
                 <Button type={'select'}/>
                 <Button type={'delete'}/>

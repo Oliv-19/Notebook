@@ -2,6 +2,24 @@ import { useEffect, useRef} from "react"
 import { useCanvas } from "./CanvasContext"
 import * as fabric from 'fabric'
 import { useShortcut } from "../hooks/index"
+import { getCanvas } from "../services/canvas"
+
+function configureCanvas(canvas, saveHistory){
+    canvas.freeDrawingBrush = new fabric.PencilBrush(canvas)
+    canvas.freeDrawingBrush.decimate = 8
+    canvas.freeDrawingBrush.color = '#000000'
+    canvas.freeDrawingBrush.width = 5
+    canvas.freeDrawingBrush.strokeLineCap = 'round'
+    canvas.freeDrawingBrush.strokeLineJoin = 'round'
+    canvas.on('path:created', (e)=> {
+        const path = e.path
+        path.set({
+            selectable: true,
+            evented: true
+        })
+        saveHistory(canvas)
+    })
+}
 
 export function Canvas(){
     const canvasRef = useRef(null)
@@ -22,36 +40,32 @@ export function Canvas(){
         'Delete': ()=>{deleteSelection()},
     }
     useShortcut(keyDownMap)
-
     useEffect(()=> {
-        const dpr = window.devicePixelRatio
-        const fabricCanvas = new fabric.Canvas(canvasRef.current, {
-            width: 1300 * dpr,
-            height: 550 * dpr,
-            isDrawingMode:true,
-            enableRetinaScaling: true,
-        }) 
-        fabricCanvas.setZoom(dpr)
-        fabricCanvas.freeDrawingBrush = new fabric.PencilBrush(fabricCanvas)
-        fabricCanvas.freeDrawingBrush.decimate = 8
-        fabricCanvas.freeDrawingBrush.color = '#000000'
-        fabricCanvas.freeDrawingBrush.width = 5
-        fabricCanvas.freeDrawingBrush.strokeLineCap = 'round'
-        fabricCanvas.freeDrawingBrush.strokeLineJoin = 'round'
-        setCanvas(fabricCanvas)
-        fabricCanvas.on('path:created', (e)=> {
-            const path = e.path
-            path.set({
-                selectable: true,
-                evented: true
-            })
-            saveHistory(fabricCanvas)
-        })
-        
-        return () => {
-            fabricCanvas.dispose()
+        const initCanvas = async()=>{
+            const savedCanvas = await getCanvas()
+            
+            const dpr = window.devicePixelRatio
+            const fabricCanvas = new fabric.Canvas(canvasRef.current, {
+                width: 1300,
+                height: 550,
+                isDrawingMode:true,
+                enableRetinaScaling: true,
+            }) 
+            fabricCanvas.setZoom(dpr)
+            configureCanvas(fabricCanvas, saveHistory)
+            setCanvas(fabricCanvas) 
+            if(savedCanvas){
+                fabricCanvas.loadFromJSON(savedCanvas, ()=> {
+                    fabricCanvas.renderAll()
+                    fabricCanvas.requestRenderAll()
+                })
+            }
+            return () => {
+                if(canvas) canvas.dispose()
+            }   
         }
-    },[])
+        initCanvas()
+    }, [])
 
     return (
         <>
