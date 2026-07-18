@@ -1,4 +1,4 @@
-import { useCanvas } from "./Canvas/CanvasContext"
+import { useCanvas } from "./CanvasContext"
 
 export function PdfViewer(){
     const {pdf} = useCanvas()

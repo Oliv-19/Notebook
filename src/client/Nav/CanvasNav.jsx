@@ -4,9 +4,11 @@ import { ColorChanger } from "./ColorChanger";
 import { Button } from "./Buttons";
 import { ImportPDF } from "./ImportPDF";
 import { SaveButton } from "./SaveButton";
+import { useAuth } from "../AuthContext";
 
 
 export function CanvasNav(){
+    const {user, logoutUser} = useAuth()
     return (
         <>
         <nav className="bg-(--green) p-3 flex justify-between">
@@ -21,6 +23,8 @@ export function CanvasNav(){
                 <Button type={'redo'}/>
                 <ColorChanger />
                 <BrushResize />
+                {user && <button onClick={logoutUser}>logout</button>}
+                
             </div>
         </nav> 
         </>
