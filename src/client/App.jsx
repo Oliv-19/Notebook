@@ -12,7 +12,7 @@ function Home (){
   return (
     <>
       <CanvasNav/>
-      <div className="relative">
+      <div className="relative min-h-screen h-fit">
         <Canvas/>
         <PdfViewer/>
       </div>
@@ -26,7 +26,7 @@ function App() {
     <AuthProvider>
       <CanvasProvider>
         <CanvasSettingsProvider>
-          <div className="">
+          <div className="overflow-y-hidden">
             <Routes>
                 <Route path='/' element={<Home/>} />
                 <Route path='/login' element={<Auth/>} />

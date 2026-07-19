@@ -23,6 +23,7 @@ function configureCanvas(canvas, saveHistory){
 
 export function Canvas(){
     const canvasRef = useRef(null)
+    const isExpanding = useRef(false)
     const {
         undo, 
         redo,
@@ -31,7 +32,8 @@ export function Canvas(){
         saveHistory,
         selectMode,
         deleteSelection,
-        pdf
+        pdf,
+        resizeCanvas
     } = useCanvas()
     const keyDownMap= {
         'ctrl+z': ()=>{undo(canvas)},
@@ -44,22 +46,24 @@ export function Canvas(){
     useEffect(()=> {
         const initCanvas = async()=>{
             const savedCanvas = await getCanvas()
-            
+
             const dpr = window.devicePixelRatio
             const fabricCanvas = new fabric.Canvas(canvasRef.current, {
-                width: 1300,
-                height: 550,
                 isDrawingMode:true,
                 enableRetinaScaling: true,
             }) 
-            fabricCanvas.setZoom(dpr)
+            fabricCanvas.setDimensions({
+                width:1300, 
+                height: 2000
+            })
             configureCanvas(fabricCanvas, saveHistory)
             setCanvas(fabricCanvas) 
             if(savedCanvas){
-                fabricCanvas.loadFromJSON(savedCanvas, ()=> {
+                
+                fabricCanvas.loadFromJSON(savedCanvas, (obj)=> {
                     fabricCanvas.renderAll()
                     fabricCanvas.requestRenderAll()
-                })
+                },)
             }
             return () => {
                 if(canvas) canvas.dispose()
@@ -68,9 +72,30 @@ export function Canvas(){
         initCanvas()
     }, [])
 
+    const handleScroll = (e) => {
+        if (isExpanding.current) return;
+        
+        const container = e.target
+        const isNearBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 200
+        if (isNearBottom) {
+            isExpanding.current = true
+            if (!canvas) return
+            const extraHeight = 1000
+            const newHeight = canvas.getHeight() + extraHeight
+
+            canvas.setDimensions({
+                width: canvas.getWidth(),
+                height: newHeight
+            })
+            canvas.renderAll()
+            setTimeout(() => { isExpanding.current = false; }, 500)
+        }
+    }
+
     return (
         <>
-        <div className={`w-full transition-all duration-500 flex justify-end`}>
+        <div onScroll={handleScroll} className={`h-screen w-full overflow-y-scroll 
+            transition-all duration-500 flex justify-end`}>
             <canvas className="border-2" ref={canvasRef}/>
         </div> 
         </>

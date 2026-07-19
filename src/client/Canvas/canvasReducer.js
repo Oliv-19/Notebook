@@ -21,6 +21,13 @@ export function canvasInstanceReducer(state, action){
             break
         case 'SET_DIMENSIONS':
             const {width, height} = action.payload
+            const {canvas} = state
+            if(canvas){
+                const originalWidth = canvas.getWidth()
+                const scale = width / originalWidth
+                canvas.setDimensions({width: width, height: height})
+                canvas.setZoom(canvas.getZoom() * scale)
+            }
             return {...state, dimensions:{w: width, h: height}}
             case 'UNDO': {
             const {canvas} = state

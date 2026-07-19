@@ -30,16 +30,14 @@ export function CanvasProvider({children}){
         URL.revokeObjectURL(pdf)
         dispatchPdf({type, payload})
     }
+    
     useEffect(()=> {
         if(!canvas) return
         if(pdf){
-            const newWidth = window.innerWidth / 2
-            const originalWidth = canvas.getWidth()
-            const scale = newWidth / originalWidth
-            canvas.setDimensions({width: newWidth, height: canvas.height})
-            canvas.setZoom(canvas.getZoom() * scale)
-        }else {
-            canvas.setDimensions({width: window.innerWidth, height: window.innerHeight})
+            const width = window.innerWidth / 2
+            const height = canvas.height
+            setCanvas('SET_DIMENSIONS', {width:width, height:height})
+
         }
         canvas.renderAll()
     }, [pdf, canvas])
