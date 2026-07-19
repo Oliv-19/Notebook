@@ -30,7 +30,8 @@ export function Canvas(){
         setCanvas,
         saveHistory,
         selectMode,
-        deleteSelection
+        deleteSelection,
+        pdf
     } = useCanvas()
     const keyDownMap= {
         'ctrl+z': ()=>{undo(canvas)},
@@ -69,7 +70,7 @@ export function Canvas(){
 
     return (
         <>
-        <div className="">
+        <div className={`w-full transition-all duration-500 flex justify-end`}>
             <canvas className="border-2" ref={canvasRef}/>
         </div> 
         </>
