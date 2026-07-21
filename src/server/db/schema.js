@@ -13,3 +13,13 @@ export const users = sqliteTable('users', {
             .default(new Date()) 
     }, (table) => check('email', sql`${table.email} LIKE %@%.%`)
 )
+
+export const userNotebook = sqliteTable('notebook_user', {
+    id: integer('id').primaryKey(),
+    userId: integer('user_id').notNull().references(() => users.id, {onDelete: 'cascade'}),
+    name: text('name').default(new Date()),
+})
+
+export const userNotebookRelations = relations(userNotebook, ({ one }) => ({
+  notebook: one(users, { fields: [userNotebook.userId], references: [users.id] }),
+}));

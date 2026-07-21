@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 
 const notesApi = new Hono()
-notesApi.get('/api/pdf', async (c) => {
+notesApi.get('/api/notes', async (c) => {
     const {noteData} = await c.req.json()
     
 })

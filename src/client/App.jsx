@@ -7,8 +7,10 @@ import { PdfViewer } from './Canvas/PdfViewer'
 import { Route, Routes } from 'react-router'
 import { AuthProvider } from './AuthContext'
 import { Auth } from './Auth'
+import { Notebooks } from './Notebooks/Notebooks'
+import { Notebook } from './Notebooks/Notebook'
 
-function Home (){
+function Content(){
   return (
     <>
       <CanvasNav/>
@@ -28,7 +30,9 @@ function App() {
         <CanvasSettingsProvider>
           <div className="overflow-y-hidden">
             <Routes>
-                <Route path='/' element={<Home/>} />
+                <Route path='/' element={<Content/>} />
+                <Route path='/notebooks' element={<Notebooks/>} />
+                <Route path='/notebooks/:name' element={<Notebook/>} />
                 <Route path='/login' element={<Auth/>} />
             </Routes>
           </div>

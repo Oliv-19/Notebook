@@ -4,13 +4,17 @@ import { createContext } from "react";
 import { checkCredentials, logout } from "./services/auth";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
+import { getUserNotebooks } from "./services/notebooks";
 
 const AuthContext = createContext()
 
 export function AuthProvider({children}){
     const [user, setUser] = useState(null)
+    const [userNotebooks, setUserNotebooks] = useState(null)
     const navigate = useNavigate()
-    const loginUser = (user)=> {setUser(user)}
+    const loginUser = async(user)=> {
+        setUser(user)
+    }
     const logoutUser = async()=> {
         await logout()
         setUser(null)
@@ -20,6 +24,9 @@ export function AuthProvider({children}){
             const logged = await checkCredentials()
             if(logged.loggedIn) {
                 setUser(logged.id)
+                const notebooks = await getUserNotebooks()
+                setUserNotebooks(notebooks)
+                
             } else {
                 logoutUser()
                 navigate('/')
@@ -31,7 +38,8 @@ export function AuthProvider({children}){
     const value = {
         user: user,
         loginUser,
-        logoutUser
+        logoutUser,
+        userNotebooks: userNotebooks
     }
 
     return <AuthContext value={value}>
