@@ -17,7 +17,14 @@ export const users = sqliteTable('users', {
 export const userNotebook = sqliteTable('notebook_user', {
     id: integer('id').primaryKey(),
     userId: integer('user_id').notNull().references(() => users.id, {onDelete: 'cascade'}),
-    name: text('name').default(new Date()),
+    name: text('name').default(new Date().toLocaleDateString()),
+    canvasInfo: text('canvas_info'),
+    createdAt: integer('created_at', { mode: "timestamp" })
+        .notNull()
+        .default(new Date()),
+    updatedAt: integer('updated_at', { mode: "timestamp" })
+        .notNull()
+        .default(new Date()) 
 })
 
 export const userNotebookRelations = relations(userNotebook, ({ one }) => ({

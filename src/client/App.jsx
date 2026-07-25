@@ -8,7 +8,6 @@ import { Route, Routes } from 'react-router'
 import { AuthProvider } from './AuthContext'
 import { Auth } from './Auth'
 import { Notebooks } from './Notebooks/Notebooks'
-import { Notebook } from './Notebooks/Notebook'
 
 function Content(){
   return (
@@ -32,7 +31,7 @@ function App() {
             <Routes>
                 <Route path='/' element={<Content/>} />
                 <Route path='/notebooks' element={<Notebooks/>} />
-                <Route path='/notebooks/:name' element={<Notebook/>} />
+                <Route path='/notebooks/:name' element={<Content/>} />
                 <Route path='/login' element={<Auth/>} />
             </Routes>
           </div>

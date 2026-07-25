@@ -3,6 +3,7 @@ import { useCanvas } from "./CanvasContext"
 import * as fabric from 'fabric'
 import { useShortcut } from "../hooks/index"
 import { getCanvas } from "../services/canvas"
+import { getCurrNotebook } from "../services/notebooks"
 
 function configureCanvas(canvas, saveHistory){
     canvas.freeDrawingBrush = new fabric.PencilBrush(canvas)
@@ -45,7 +46,10 @@ export function Canvas(){
     useShortcut(keyDownMap)
     useEffect(()=> {
         const initCanvas = async()=>{
-            const savedCanvas = await getCanvas()
+            const notebook =  getCurrNotebook()
+            console.log(notebook);
+            
+            const savedCanvas = await getCanvas(notebook.id)
 
             const dpr = window.devicePixelRatio
             const fabricCanvas = new fabric.Canvas(canvasRef.current, {

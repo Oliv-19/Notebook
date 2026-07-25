@@ -2,6 +2,7 @@ import { useNavigate } from "react-router"
 import { useAuth } from "../AuthContext"
 import { useCanvas } from "../Canvas/CanvasContext"
 import { saveCanvas } from "../services/canvas"
+import { getCurrNotebook } from "../services/notebooks"
 
 export function SaveButton(){
     const {canvas} = useCanvas()
@@ -10,7 +11,7 @@ export function SaveButton(){
     
     const save = async()=> {
         if(!user) navigate('/login')
-        await saveCanvas(canvas)
+        await saveCanvas(canvas, getCurrNotebook().id)
     }
     return (
         <>

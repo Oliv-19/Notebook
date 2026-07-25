@@ -4,7 +4,8 @@ export const createNB = async(name) => {
         body: JSON.stringify({name})
     })
     if(!response.ok) return null
-    return
+    const data = await response.json()
+    return data.notebook
 }
 
 export const getUserNotebooks = async() => {
@@ -12,4 +13,14 @@ export const getUserNotebooks = async() => {
     
     const data = await response.json()
     return data
+}
+
+export const saveCurrNotebook = (notebook) => {
+    localStorage.setItem('notebook', JSON.stringify(notebook))
+    return
+}
+
+export const getCurrNotebook = () => {
+    const notebook = localStorage.getItem('notebook')
+    return JSON.parse(notebook)
 }
