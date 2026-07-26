@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useCanvas } from "../Canvas/CanvasContext"
 import { getPdf } from "../services/pdfs"
 
+
 function Dialog({isOpen, close}){
     const {uploadPdf} = useCanvas()
     const submitPdf = async(e) => {
@@ -11,15 +12,10 @@ function Dialog({isOpen, close}){
         const fileWeb = formData.get('pdfWeb')
         if(file && file.type == 'application/pdf'){
             uploadPdf(file)
-            close()
         }else if(fileWeb){
-            const blob =await getPdf(fileWeb)
-            console.log(blob);
-            
-            uploadPdf(blob)
-            close()
-            
+            uploadPdf(fileWeb) 
         }
+        close()
     }
     return(
         <>

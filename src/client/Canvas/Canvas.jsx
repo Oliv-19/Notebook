@@ -33,7 +33,8 @@ export function Canvas(){
         saveHistory,
         selectMode,
         deleteSelection,
-        pdf,
+        uploadPdf,
+        resetPdf,
         resizeCanvas
     } = useCanvas()
     const keyDownMap= {
@@ -59,9 +60,12 @@ export function Canvas(){
             setCanvas(fabricCanvas) 
             const notebook =  getCurrNotebook()
             if(notebook){
-                const savedCanvas = await getCanvas(notebook.id)
-                if(savedCanvas){
-                    
+                const {savedCanvas, pdf} = await getCanvas(notebook.id)
+                if(pdf){
+                    uploadPdf(pdf)
+
+                } 
+                if(savedCanvas){ 
                     fabricCanvas.loadFromJSON(savedCanvas, (obj)=> {
                         fabricCanvas.renderAll()
                         fabricCanvas.requestRenderAll()
@@ -69,11 +73,12 @@ export function Canvas(){
                 }
             }
 
-            return () => {
-                if(canvas) canvas.dispose()
-            }   
         }
         initCanvas()
+        return () => {
+            if(canvas) canvas.dispose()
+            resetPdf()
+        }   
     }, [])
 
     const handleScroll = (e) => {

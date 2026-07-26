@@ -110,6 +110,9 @@ export function pdfReducer(state, action) {
             const url = URL.createObjectURL(data)
             return {...state, pdf: url}
         }
+        case 'RESET_PDF':{
+            return {...state, pdf: null}
+        }
         default:
             return state
             break

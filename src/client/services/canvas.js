@@ -1,7 +1,11 @@
-export async function saveCanvas(canvas, notebookId){
+export async function saveCanvas(canvas, notebookId, pdf=null){
     const response = await fetch('/api/save-note',{
         method: 'POST',
-        body: JSON.stringify({canvasData: canvas.toJSON(), notebookId})
+        body: JSON.stringify({
+            canvasData: canvas.toJSON(), 
+            notebookId,
+            pdf
+        })
     })
     if(!response.ok) return null
     const data = await response.json()
@@ -12,5 +16,5 @@ export async function getCanvas(id) {
     const response = await fetch(`/api/get-note/${id}`)
     if(!response.ok) return null
     const data = await response.json()
-    return JSON.parse(data.canvas)
+    return {savedCanvas: JSON.parse(data.canvas), pdf: data.pdf}
 }

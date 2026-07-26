@@ -31,7 +31,7 @@ notebooksApi.post('/api/notebook', auth, async (c) => {
 })
 
 notebooksApi.post('/api/save-note', auth, async (c) => {
-    const {canvasData, notebookId} = await c.req.json()
+    const {canvasData, notebookId, pdf} = await c.req.json()
     const db = drizzle(c.env.DB, {schema})
     const user = c.get('user')
     
@@ -40,8 +40,9 @@ notebooksApi.post('/api/save-note', auth, async (c) => {
         if (!canvasData) {
             return c.json({success:false, error: 'Canvas data not found' }, 404);
         }
+        
         const notebook = await db.update(schema.userNotebook)
-        .set({canvasInfo: JSON.stringify(canvasData)})
+        .set({canvasInfo: JSON.stringify(canvasData), pdfUrl: pdf? pdf: undefined})
         .where(and(
             eq(schema.userNotebook.userId, user.id),
             eq(schema.userNotebook.id, notebookId),
@@ -71,7 +72,7 @@ notebooksApi.get('/api/get-note/:id', auth, async (c) => {
         })
         if(!notebook) return c.json({success:false ,error:'Notebook not found'}, 400)
         
-        return c.json({canvas: notebook.canvasInfo}, 200)
+        return c.json({canvas: notebook.canvasInfo, pdf: notebook.pdfUrl}, 200)
 
     } catch (e){
         console.error(e)

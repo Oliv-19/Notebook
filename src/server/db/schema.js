@@ -19,6 +19,7 @@ export const userNotebook = sqliteTable('notebook_user', {
     userId: integer('user_id').notNull().references(() => users.id, {onDelete: 'cascade'}),
     name: text('name').default(new Date().toLocaleDateString()),
     canvasInfo: text('canvas_info'),
+    pdfUrl: text('pdf_url'),
     createdAt: integer('created_at', { mode: "timestamp" })
         .notNull()
         .default(new Date()),

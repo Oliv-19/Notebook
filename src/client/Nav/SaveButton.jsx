@@ -5,14 +5,15 @@ import { saveCanvas } from "../services/canvas"
 import { getCurrNotebook } from "../services/notebooks"
 
 export function SaveButton(){
-    const {canvas} = useCanvas()
+    const {canvas, pdfUrl} = useCanvas()
     const { user } = useAuth()
     const navigate = useNavigate()
     
     const save = async()=> {
         if(!user) navigate('/login')
         const notebook = getCurrNotebook()
-        await saveCanvas(canvas, notebook.id)
+        
+        await saveCanvas(canvas, notebook.id, pdfUrl)
     }
     return (
         <>
