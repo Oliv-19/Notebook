@@ -46,11 +46,6 @@ export function Canvas(){
     useShortcut(keyDownMap)
     useEffect(()=> {
         const initCanvas = async()=>{
-            const notebook =  getCurrNotebook()
-            console.log(notebook);
-            
-            const savedCanvas = await getCanvas(notebook.id)
-
             const dpr = window.devicePixelRatio
             const fabricCanvas = new fabric.Canvas(canvasRef.current, {
                 isDrawingMode:true,
@@ -62,13 +57,18 @@ export function Canvas(){
             })
             configureCanvas(fabricCanvas, saveHistory)
             setCanvas(fabricCanvas) 
-            if(savedCanvas){
-                
-                fabricCanvas.loadFromJSON(savedCanvas, (obj)=> {
-                    fabricCanvas.renderAll()
-                    fabricCanvas.requestRenderAll()
-                },)
+            const notebook =  getCurrNotebook()
+            if(notebook){
+                const savedCanvas = await getCanvas(notebook.id)
+                if(savedCanvas){
+                    
+                    fabricCanvas.loadFromJSON(savedCanvas, (obj)=> {
+                        fabricCanvas.renderAll()
+                        fabricCanvas.requestRenderAll()
+                    },)
+                }
             }
+
             return () => {
                 if(canvas) canvas.dispose()
             }   

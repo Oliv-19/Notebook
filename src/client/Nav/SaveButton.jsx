@@ -11,7 +11,8 @@ export function SaveButton(){
     
     const save = async()=> {
         if(!user) navigate('/login')
-        await saveCanvas(canvas, getCurrNotebook().id)
+        const notebook = getCurrNotebook()
+        await saveCanvas(canvas, notebook.id)
     }
     return (
         <>
