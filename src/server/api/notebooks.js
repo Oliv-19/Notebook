@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import * as schema from '../db/schema'
 import { drizzle } from "drizzle-orm/d1";
 import { auth } from "../middlewares/auth";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 const notebooksApi = new Hono()
 notebooksApi.post('/api/notebook', auth, async (c) => {
@@ -13,13 +13,66 @@ notebooksApi.post('/api/notebook', auth, async (c) => {
     
     try{
         if(!user) return c.json({success:false, error: 'User not found'}, 404)
-        const notebook = await db
+        
+        const [notebook] = await db
         .insert(schema.userNotebook)
         .values({
             userId: user.id,
-            name: name
-        })
+            name: name,
+        }).returning()
+        return c.json({notebook}, 201)
+
+    } catch (e){
+        console.error(e)
+        return c.json({success:false}, 400)
+        
+    }
+    
+})
+
+notebooksApi.post('/api/save-note', auth, async (c) => {
+    const {canvasData, notebookId, pdf} = await c.req.json()
+    const db = drizzle(c.env.DB, {schema})
+    const user = c.get('user')
+    
+    try{
+        if(!user) return c.json({success:false, error: 'User not found'}, 404)
+        if (!canvasData) {
+            return c.json({success:false, error: 'Canvas data not found' }, 404);
+        }
+        
+        const notebook = await db.update(schema.userNotebook)
+        .set({canvasInfo: JSON.stringify(canvasData), pdfUrl: pdf? pdf: undefined})
+        .where(and(
+            eq(schema.userNotebook.userId, user.id),
+            eq(schema.userNotebook.id, notebookId),
+        ))
+        
         return c.json({success: true}, 201)
+
+    } catch (e){
+        console.error(e)
+        return c.json({success:false}, 400)
+        
+    }
+    
+})
+notebooksApi.get('/api/get-note/:id', auth, async (c) => {
+    const id = await c.req.param('id')
+    const db = drizzle(c.env.DB, {schema})
+    const user = c.get('user')
+    
+    try{
+        if(!user) return c.json({success:false, error: 'User not found'}, 404)
+        const notebook = await db.query.userNotebook.findFirst({
+            where: (and(
+                eq(schema.userNotebook.userId, user.id),
+                eq(schema.userNotebook.id, id),
+            ))
+        })
+        if(!notebook) return c.json({success:false ,error:'Notebook not found'}, 400)
+        
+        return c.json({canvas: notebook.canvasInfo, pdf: notebook.pdfUrl}, 200)
 
     } catch (e){
         console.error(e)

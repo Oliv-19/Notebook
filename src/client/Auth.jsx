@@ -42,7 +42,7 @@ export function Auth(){
         }
         if(res) {
             loginUser(res.id)
-            navigate('/')
+            navigate('/notebooks')
         }
     }
     return (

@@ -5,6 +5,7 @@ import { Button } from "./Buttons";
 import { ImportPDF } from "./ImportPDF";
 import { SaveButton } from "./SaveButton";
 import { useAuth } from "../AuthContext";
+import { Link } from "react-router";
 
 
 export function CanvasNav(){
@@ -12,7 +13,9 @@ export function CanvasNav(){
     return (
         <>
         <nav className="bg-(--green) p-3 flex justify-between">
-            <h1 className="text-white font-medium text-2xl">Notebook</h1>
+            <Link to={'/notebooks'} className="text-white font-medium text-2xl">
+                Notebook
+            </Link>
             <div className="flex gap-2">
                 <SaveButton/>
                 <ImportPDF/>

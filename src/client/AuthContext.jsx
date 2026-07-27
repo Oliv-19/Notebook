@@ -11,6 +11,7 @@ const AuthContext = createContext()
 export function AuthProvider({children}){
     const [user, setUser] = useState(null)
     const [userNotebooks, setUserNotebooks] = useState(null)
+    const [isLoading, setIsLoading] = useState(true)
     const navigate = useNavigate()
     const loginUser = async(user)=> {
         setUser(user)
@@ -31,6 +32,7 @@ export function AuthProvider({children}){
                 logoutUser()
                 navigate('/')
             }
+            setIsLoading(false)
         }
         checkForUser()
     }, [])
@@ -39,7 +41,8 @@ export function AuthProvider({children}){
         user: user,
         loginUser,
         logoutUser,
-        userNotebooks: userNotebooks
+        userNotebooks: userNotebooks,
+        isLoading
     }
 
     return <AuthContext value={value}>

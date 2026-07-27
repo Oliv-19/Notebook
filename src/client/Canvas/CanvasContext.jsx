@@ -1,6 +1,8 @@
 import { useReducer } from "react"
 import { useState, useEffect, createContext, useContext } from "react"
 import { canvasInstanceReducer, pdfReducer } from "./canvasReducer"
+import { getPdf } from "../services/pdfs"
+import { useLocation } from "react-router"
 
 const CanvasContext = createContext()
 const initStateCanvas = {
@@ -19,16 +21,24 @@ const initStatePdf = {
 export function CanvasProvider({children}){
     const [canvasState, dispatchCanvas] = useReducer(canvasInstanceReducer, initStateCanvas)
     const [pdfState, dispatchPdf] = useReducer(pdfReducer, initStatePdf)
-    
+    const location = useLocation()
     const { canvas, isSelection} = canvasState
     const { pdf }= pdfState
-    
+    const [pdfUrl, setPdfUrl] = useState(null)
     const setCanvas = (type, payload)=> {
         dispatchCanvas({type, payload})
     }
-    const setPDF = (type, payload)=> {
+    const setPDF = async(url)=> {
         URL.revokeObjectURL(pdf)
-        dispatchPdf({type, payload})
+        setPdfUrl(url)
+        if(url.type !== 'application/pdf'){
+            const blob =await getPdf(url)
+            dispatchPdf({type:'UPLOAD_PDF', payload: blob})
+            
+        }else{
+            dispatchPdf({type:'UPLOAD_PDF', payload: url})
+
+        }
     }
     
     useEffect(()=> {
@@ -55,8 +65,9 @@ export function CanvasProvider({children}){
         selectMode: (isSelection)=> {setCanvas('SELECT_MODE', isSelection)},
         isSelectionMode: isSelection,
         deleteSelection : () => {setCanvas('DELETE', canvasState)},
-        uploadPdf: (url)=> {setPDF('UPLOAD_PDF', url)},
-        pdf
+        uploadPdf: (url)=> {setPDF(url)},
+        pdf,
+        resetPdf: ()=> {dispatchPdf({type:'RESET_PDF', payload: null})}
     }
     return (
         <CanvasContext value={canvasInfo}>

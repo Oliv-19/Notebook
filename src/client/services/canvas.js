@@ -1,9 +1,20 @@
-export async function saveCanvas(canvas){
-    const jsonData = JSON.stringify(canvas.toJSON())
-    localStorage.setItem('canvas', jsonData)
+export async function saveCanvas(canvas, notebookId, pdf=null){
+    const response = await fetch('/api/save-note',{
+        method: 'POST',
+        body: JSON.stringify({
+            canvasData: canvas.toJSON(), 
+            notebookId,
+            pdf
+        })
+    })
+    if(!response.ok) return null
+    const data = await response.json()
+    return
 }
 
-export async function getCanvas() {
-    const canvasJson = localStorage.getItem('canvas')
-    return JSON.parse(canvasJson) 
+export async function getCanvas(id) {
+    const response = await fetch(`/api/get-note/${id}`)
+    if(!response.ok) return null
+    const data = await response.json()
+    return {savedCanvas: JSON.parse(data.canvas), pdf: data.pdf}
 }

@@ -4,11 +4,10 @@ import { CanvasNav } from './Nav/CanvasNav'
 import { CanvasProvider } from './Canvas/CanvasContext'
 import { CanvasSettingsProvider } from './Canvas/CanvasSettingsContext'
 import { PdfViewer } from './Canvas/PdfViewer'
-import { Route, Routes } from 'react-router'
-import { AuthProvider } from './AuthContext'
+import { Navigate, Route, Routes } from 'react-router'
+import { AuthProvider, useAuth } from './AuthContext'
 import { Auth } from './Auth'
 import { Notebooks } from './Notebooks/Notebooks'
-import { Notebook } from './Notebooks/Notebook'
 
 function Content(){
   return (
@@ -21,6 +20,15 @@ function Content(){
     </>
   )
 }
+function Root(){
+  const {user, isLoading} = useAuth()
+  if(isLoading) return <div>loading...</div>
+  return user ? (
+      <Navigate to={'/notebooks'} replace/>
+  ) : (
+    <Navigate to={'/login'} replace/>
+  )
+}
 
 function App() {
   return (
@@ -30,9 +38,9 @@ function App() {
         <CanvasSettingsProvider>
           <div className="overflow-y-hidden">
             <Routes>
-                <Route path='/' element={<Content/>} />
+                <Route path='/' element={<Root/>} />
                 <Route path='/notebooks' element={<Notebooks/>} />
-                <Route path='/notebooks/:name' element={<Notebook/>} />
+                <Route path='/notebooks/:name' element={<Content/>} />
                 <Route path='/login' element={<Auth/>} />
             </Routes>
           </div>

@@ -3,6 +3,7 @@ import { useCanvas } from "./CanvasContext"
 import * as fabric from 'fabric'
 import { useShortcut } from "../hooks/index"
 import { getCanvas } from "../services/canvas"
+import { getCurrNotebook } from "../services/notebooks"
 
 function configureCanvas(canvas, saveHistory){
     canvas.freeDrawingBrush = new fabric.PencilBrush(canvas)
@@ -32,7 +33,8 @@ export function Canvas(){
         saveHistory,
         selectMode,
         deleteSelection,
-        pdf,
+        uploadPdf,
+        resetPdf,
         resizeCanvas
     } = useCanvas()
     const keyDownMap= {
@@ -45,8 +47,6 @@ export function Canvas(){
     useShortcut(keyDownMap)
     useEffect(()=> {
         const initCanvas = async()=>{
-            const savedCanvas = await getCanvas()
-
             const dpr = window.devicePixelRatio
             const fabricCanvas = new fabric.Canvas(canvasRef.current, {
                 isDrawingMode:true,
@@ -58,18 +58,27 @@ export function Canvas(){
             })
             configureCanvas(fabricCanvas, saveHistory)
             setCanvas(fabricCanvas) 
-            if(savedCanvas){
-                
-                fabricCanvas.loadFromJSON(savedCanvas, (obj)=> {
-                    fabricCanvas.renderAll()
-                    fabricCanvas.requestRenderAll()
-                },)
+            const notebook =  getCurrNotebook()
+            if(notebook){
+                const {savedCanvas, pdf} = await getCanvas(notebook.id)
+                if(pdf){
+                    uploadPdf(pdf)
+
+                } 
+                if(savedCanvas){ 
+                    fabricCanvas.loadFromJSON(savedCanvas, (obj)=> {
+                        fabricCanvas.renderAll()
+                        fabricCanvas.requestRenderAll()
+                    },)
+                }
             }
-            return () => {
-                if(canvas) canvas.dispose()
-            }   
+
         }
         initCanvas()
+        return () => {
+            if(canvas) canvas.dispose()
+            resetPdf()
+        }   
     }, [])
 
     const handleScroll = (e) => {

@@ -1,15 +1,19 @@
 import { useState } from 'react'
 import {Link, useNavigate} from 'react-router'
-import { createNB } from '../services/notebooks'
+import { createNB, saveCurrNotebook } from '../services/notebooks'
 import { useAuth } from '../AuthContext'
+import { useCanvas } from '../Canvas/CanvasContext'
 
 function NewNotebookModal({close}){
     const navigate = useNavigate()
-    const createNewNotebook = (e)=> {
+    const createNewNotebook = async(e)=> {
         e.preventDefault()
         const formData = new FormData(e.target)
         const name = formData.get('name')
-        createNB(name)
+        const notebook = await createNB(name)
+        console.log(notebook);
+        
+        saveCurrNotebook(notebook) 
         navigate(`/notebooks/${name}`)
     }
     return (
@@ -36,9 +40,11 @@ function NewNotebookModal({close}){
 export function Notebooks(){
     const [isOpen, setIsOpen]= useState()
     const {userNotebooks} = useAuth()
-    console.log(userNotebooks);
     
-    if(!userNotebooks || userNotebooks.length == 0) return null
+    if(!userNotebooks) return null
+    const updateNotebook = (notebook)=> {
+        saveCurrNotebook(notebook) 
+    }
     return (
         <>
         <div className="flex flex-col justify-center items-center 
@@ -53,7 +59,8 @@ export function Notebooks(){
             <div className="h-400 w-full flex flex-wrap justify-start gap-5 
                 ">
                 {userNotebooks.map((notebook) => {
-                    return <Link key={notebook.name} to={`/notebooks/${notebook.name}`} 
+                    return <Link key={notebook.name} onClick={()=>{updateNotebook(notebook)}}
+                            to={`/notebooks/${notebook.name}`} 
                         className="bg-(--green) w-40 h-50">
                         {notebook.name}
                     </Link>
