@@ -18,32 +18,31 @@ export function CanvasNav(){
             <Link to={'/notebooks'} className="text-white font-medium text-2xl">
                 Notebook
             </Link>
+            <Button type={'select'}/>
+            <Button type={'delete'}/>
+            <Button type={'draw'}/>
+            <Button type={'undo'}/>
+            <Button type={'redo'}/>
+            <ColorChanger />
+            <BrushResize />
             <button onClick={()=> {setIsOpen(true)}}>Options</button>
-            {isOpen && (
-                <>
-                <div onClick={()=> {setIsOpen(false)}} className="bg-transparent
-                    h-full w-full absolute top-0 right-0 z-2 "
-                 />
-                <div className="relative">
-                    <div className="flex flex-col absolute  gap-2
-                        w-fit p-2 bg-(--green)/90 top-10 right-0 z-3"
-                        onClick={()=> {setIsOpen(false)}}>
+            <div onClick={()=> {setIsOpen(false)}} className={`bg-transparent
+                h-full w-full absolute top-0 right-0 z-2 
+                ${isOpen? 'block': 'hidden'}`}
+            />
+            <div className={`${isOpen ? 'flex': 'hidden'} absolute`}>
+                <div className=" absolute  
+                    w-fit  bg-(--green)/90 top-10 -right-320 z-3"
+                    >
+                    <div className="relative flex flex-col gap-2 p-2">
 
                     <SaveButton/>
                     <ImportPDF/>
-                    <Button type={'select'}/>
-                    <Button type={'delete'}/>
-                    <Button type={'draw'}/>
-                    <Button type={'undo'}/>
-                    <Button type={'redo'}/>
-                    <ColorChanger />
-                    <BrushResize />
                     {user && <button onClick={logoutUser}>logout</button>}
                     </div>
-                    
+
                 </div>
-                </>
-            )}
+            </div>
         </nav> 
         </>
     )

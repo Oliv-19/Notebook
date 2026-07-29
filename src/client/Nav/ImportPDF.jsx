@@ -19,7 +19,7 @@ function Dialog({isOpen, close}){
     }
     return(
         <>
-        <div className={`${isOpen? 'flex' : 'hidden'} absolute top-0 left-0 w-full 
+        <div className={`${isOpen? 'flex' : 'hidden'} absolute top-50 -left-180 w-100 
             h-full justify-center items-center z-2`}>
                 <div className="bg-purple-100 w-150 h-50 ">
                 <form className="w-full h-full" onSubmit={submitPdf} action="">
