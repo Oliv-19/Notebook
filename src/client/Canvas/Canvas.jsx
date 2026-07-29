@@ -24,6 +24,7 @@ function configureCanvas(canvas, saveHistory){
 
 export function Canvas(){
     const canvasRef = useRef(null)
+    const fabricCanvasRef = useRef(null)
     const isExpanding = useRef(false)
     const {
         undo, 
@@ -53,9 +54,10 @@ export function Canvas(){
                 enableRetinaScaling: true,
             }) 
             fabricCanvas.setDimensions({
-                width:1300, 
+                width: window.innerWidth -15, 
                 height: 2000
             })
+            fabricCanvasRef.current=fabricCanvas
             configureCanvas(fabricCanvas, saveHistory)
             setCanvas(fabricCanvas) 
             const notebook =  getCurrNotebook()
@@ -72,10 +74,18 @@ export function Canvas(){
                     },)
                 }
             }
-
         }
         initCanvas()
+        function handleWindowResize() {
+            if(fabricCanvasRef.current){
+                fabricCanvasRef.current.setDimensions({width: window.innerWidth - 15, height: fabricCanvasRef.current.height});
+                fabricCanvasRef.current.calcOffset(); 
+                fabricCanvasRef.current.requestRenderAll();
+            }
+        }
+        window.addEventListener('resize', handleWindowResize) 
         return () => {
+            window.removeEventListener('resize', handleWindowResize)
             if(canvas) canvas.dispose()
             resetPdf()
         }   
@@ -103,9 +113,9 @@ export function Canvas(){
 
     return (
         <>
-        <div onScroll={handleScroll} className={`h-screen w-full overflow-y-scroll 
+        <div onScroll={handleScroll} className={`h-138 w-full overflow-y-scroll 
             transition-all duration-500 flex justify-end`}>
-            <canvas className="border-2" ref={canvasRef}/>
+            <canvas className="" ref={canvasRef}/>
         </div> 
         </>
     )

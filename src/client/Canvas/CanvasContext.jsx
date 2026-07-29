@@ -44,9 +44,10 @@ export function CanvasProvider({children}){
     useEffect(()=> {
         if(!canvas) return
         if(pdf){
-            const width = window.innerWidth / 2
+            
+            const width = window.screen.width / 2
             const height = canvas.height
-            setCanvas('SET_DIMENSIONS', {width:width, height:height})
+            setCanvas('SET_DIMENSIONS', {width:width+50, height:height})
 
         }
         canvas.renderAll()
@@ -67,6 +68,7 @@ export function CanvasProvider({children}){
         deleteSelection : () => {setCanvas('DELETE', canvasState)},
         uploadPdf: (url)=> {setPDF(url)},
         pdf,
+        pdfUrl,
         resetPdf: ()=> {dispatchPdf({type:'RESET_PDF', payload: null})}
     }
     return (

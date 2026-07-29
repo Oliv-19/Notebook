@@ -12,11 +12,15 @@ import { Notebooks } from './Notebooks/Notebooks'
 function Content(){
   return (
     <>
-      <CanvasNav/>
-      <div className="relative min-h-screen h-fit">
-        <Canvas/>
-        <PdfViewer/>
+    <div className="flex justify-center items-center w-full">
+      <PdfViewer/>
+      <div className="h-screen w-fit">
+        <CanvasNav/>
+        <div className="relative min-h-screen h-fit">
+          <Canvas/>
+        </div>
       </div>
+    </div>
     </>
   )
 }
@@ -36,7 +40,7 @@ function App() {
     <AuthProvider>
       <CanvasProvider>
         <CanvasSettingsProvider>
-          <div className="overflow-y-hidden">
+          <div className="overflow-y-hidden w-screen">
             <Routes>
                 <Route path='/' element={<Root/>} />
                 <Route path='/notebooks' element={<Notebooks/>} />
