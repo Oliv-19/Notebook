@@ -7,6 +7,7 @@ import { SaveButton } from "./SaveButton";
 import { useAuth } from "../AuthContext";
 import { Link } from "react-router";
 import { useState } from "react";
+import { Setting } from "./Settings";
 
 
 export function CanvasNav(){
@@ -43,6 +44,7 @@ export function CanvasNav(){
 
                 </div>
             </div>
+            <Setting />
         </nav> 
         </>
     )
