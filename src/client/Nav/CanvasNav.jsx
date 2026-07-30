@@ -9,6 +9,41 @@ import { Link } from "react-router";
 import { useState } from "react";
 import { Setting } from "./Settings";
 
+function Dropdown(){
+    const {user, logoutUser} = useAuth()
+    const [openDropdown, setOpenDropdown] = useState(false)
+    return (
+        <>
+            <div className="">
+                <div onClick={()=>{setOpenDropdown(false)}} 
+                    className={`${openDropdown? 'block': 'hidden'} z-2 fixed inset-0 bg-black/10 
+                    transition-opacity` }/>
+                <button 
+                    onClick={()=>{setOpenDropdown(prev =>!prev)}}
+                    className="w-30 h-10 text-(--color-text) flex flex-row items-center 
+                    justify-evenly cursor-pointer font-medium">
+                    <p>Options</p>
+                </button>
+                <div className="relative">
+                    <div className={`text-(--color-text) py-2 bg-(--green) h-fit max-h-100 absolute z-3 
+                        flex-col w-fit min-w-40 max-w-50 rounded ${openDropdown? 'flex' : 'hidden'}
+                        overflow-y-auto overflow-x-hidden right-0
+                        [&::-webkit-scrollbar]:w-2
+                        [&::-webkit-scrollbar-track]:rounded-full
+                        [&::-webkit-scrollbar-thumb]:rounded-full
+                        dark:[&::-webkit-scrollbar-track]:bg-neutral-700
+                        dark:[&::-webkit-scrollbar-thumb]:bg-neutral-400`}>
+                        <SaveButton/>
+                        <ImportPDF/>
+                        {user && <button onClick={logoutUser}>logout</button>}
+                    </div>
+                </div>
+                
+            </div>
+        </>
+    )
+}
+
 
 export function CanvasNav(){
     const {user, logoutUser} = useAuth()
@@ -26,24 +61,7 @@ export function CanvasNav(){
             <Button type={'redo'}/>
             <ColorChanger />
             <BrushResize />
-            <button onClick={()=> {setIsOpen(true)}}>Options</button>
-            <div onClick={()=> {setIsOpen(false)}} className={`bg-transparent
-                h-full w-full absolute top-0 right-0 z-2 
-                ${isOpen? 'block': 'hidden'}`}
-            />
-            <div className={`${isOpen ? 'flex': 'hidden'} absolute`}>
-                <div className=" absolute  
-                    w-fit  bg-(--green)/90 top-10 -right-320 z-3"
-                    >
-                    <div className="relative flex flex-col gap-2 p-2">
-
-                    <SaveButton/>
-                    <ImportPDF/>
-                    {user && <button onClick={logoutUser}>logout</button>}
-                    </div>
-
-                </div>
-            </div>
+            <Dropdown/>
             <Setting />
         </nav> 
         </>

@@ -15,24 +15,26 @@ export function AuthProvider({children}){
     const navigate = useNavigate()
     const loginUser = async(user)=> {
         setUser(user)
+        const notebooks = await getUserNotebooks()
+        setUserNotebooks(notebooks)
     }
     const logoutUser = async()=> {
         await logout()
         setUser(null)
+        navigate('/')
     }
     useEffect(()=> {
         const checkForUser = async ()=> {
             const logged = await checkCredentials()
-            if(logged.loggedIn) {
+            if(logged?.loggedIn) {
                 setUser(logged.id)
                 const notebooks = await getUserNotebooks()
                 setUserNotebooks(notebooks)
-                
+                setIsLoading(false)
             } else {
                 logoutUser()
-                navigate('/')
+                setIsLoading(false)
             }
-            setIsLoading(false)
         }
         checkForUser()
     }, [])

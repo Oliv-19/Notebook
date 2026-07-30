@@ -12,7 +12,7 @@ export function SaveButton(){
     const save = async()=> {
         if(!user) navigate('/login')
         const notebook = getCurrNotebook()
-        await saveCanvas(canvas, notebook.id, (pdfUrl.type !== 'application/pdf' && pdfUrl))
+        await saveCanvas(canvas, notebook.id, (pdfUrl?.type !== 'application/pdf' && pdfUrl))
     }
     return (
         <>

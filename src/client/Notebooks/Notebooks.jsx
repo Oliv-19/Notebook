@@ -11,7 +11,6 @@ function NewNotebookModal({close}){
         const formData = new FormData(e.target)
         const name = formData.get('name')
         const notebook = await createNB(name)
-        console.log(notebook);
         
         saveCurrNotebook(notebook) 
         navigate(`/notebooks/${name}`)
@@ -41,7 +40,6 @@ export function Notebooks(){
     const [isOpen, setIsOpen]= useState()
     const {userNotebooks} = useAuth()
     
-    if(!userNotebooks) return null
     const updateNotebook = (notebook)=> {
         saveCurrNotebook(notebook) 
     }
@@ -58,7 +56,7 @@ export function Notebooks(){
             </div>
             <div className="h-400 w-full flex flex-wrap justify-start gap-5 
                 ">
-                {userNotebooks.map((notebook) => {
+                {userNotebooks && userNotebooks.map((notebook) => {
                     return <Link key={notebook.name} onClick={()=>{updateNotebook(notebook)}}
                             to={`/notebooks/${notebook.name}`} 
                         className="bg-(--green) w-40 h-50">

@@ -10,7 +10,7 @@ const authApi = new Hono()
 
 authApi.post('/api/signup', async (c) => {
     const {email, password} = await c.req.json()
-    const db = drizzle(c.env.DB, schema)
+    const db = drizzle(c.env.DB, {schema})
     try{
         const passwordHash = await bcrypt.hash(password, 10)
         const [user] = await db

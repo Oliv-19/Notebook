@@ -41,8 +41,9 @@ export const logout = async () => {
 export const checkCredentials = async () => {
     const response = await fetch('/api/checkCredentials')
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+        return null
+    }else{
+        const data = await response.json()
+        return data
     }
-    const data = await response.json()
-   return data
 }
