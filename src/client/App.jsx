@@ -8,6 +8,7 @@ import { Navigate, Route, Routes } from 'react-router'
 import { AuthProvider, useAuth } from './AuthContext'
 import { Auth } from './Auth'
 import { Notebooks } from './Notebooks/Notebooks'
+import { NotebookProvider } from './Notebooks/NotebooksContext'
 
 function Content(){
   return (
@@ -38,18 +39,20 @@ function App() {
   return (
     <>
     <AuthProvider>
-      <CanvasProvider>
-        <CanvasSettingsProvider>
-          <div className="overflow-y-hidden w-screen">
-            <Routes>
-                <Route path='/' element={<Root/>} />
-                <Route path='/notebooks' element={<Notebooks/>} />
-                <Route path='/notebooks/:name' element={<Content/>} />
-                <Route path='/login' element={<Auth/>} />
-            </Routes>
-          </div>
-        </CanvasSettingsProvider>
-      </CanvasProvider>
+      <NotebookProvider>
+        <CanvasProvider>
+          <CanvasSettingsProvider>
+            <div className="overflow-y-hidden w-screen">
+              <Routes>
+                  <Route path='/' element={<Root/>} />
+                  <Route path='/notebooks' element={<Notebooks/>} />
+                  <Route path='/notebooks/:name' element={<Content/>} />
+                  <Route path='/login' element={<Auth/>} />
+              </Routes>
+            </div>
+          </CanvasSettingsProvider>
+        </CanvasProvider>
+      </NotebookProvider>
     </AuthProvider>
     </>
   )

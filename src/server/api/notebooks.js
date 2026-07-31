@@ -114,5 +114,22 @@ notebooksApi.delete('/api/notebook', async(c) => {
         return c.json({success:false}, 400)
     }
 })
+notebooksApi.get('/api/delete-notebook/:id', auth, async(c) => {
+    const id = await c.req.param('id')
+    const db = drizzle(c.env.DB, schema)
+    const user = c.get('user')
+    try{
+        await db
+        .delete(schema.userNotebook)
+        .where(and(
+            eq(schema.userNotebook.id, id),
+            eq(schema.userNotebook.userId, user.id)
+        ))
+        return c.json({success:true, deleted: `id: ${id}`}, 200)
+    } catch (error){
+        console.error(error);
+        return c.json({success:false}, 400)
+    }
+})
 
 export default notebooksApi

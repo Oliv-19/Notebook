@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import {Link, useNavigate} from 'react-router'
-import { createNB, saveCurrNotebook } from '../services/notebooks'
+import { createNB, deleteNotebook, saveCurrNotebook } from '../services/notebooks'
 import { useAuth } from '../AuthContext'
 import { useCanvas } from '../Canvas/CanvasContext'
+import { useNotebooks } from './NotebooksContext'
+import { useEffect } from 'react'
 
 function NewNotebookModal({close}){
     const navigate = useNavigate()
@@ -35,14 +37,41 @@ function NewNotebookModal({close}){
         </>
     )
 }
+function Notebook({notebook}){
+    const {getNotebooks} = useNotebooks()
+    const updateNotebook = ()=> {
+        saveCurrNotebook(notebook) 
+    }
+    const delNotebook = async()=> {
+        await deleteNotebook(notebook.id)
+        getNotebooks()
+    }
+    return(
+        <>
+        <div className="bg-(--green) w-40 h-50 flex flex-col items-center">
+            <button onClick={delNotebook} 
+                className='cursor-pointer w-5 h-5 bg-white'>
+                    X
+            </button>
+            <Link onClick={()=>{updateNotebook(notebook)}}
+                    to={`/notebooks/${notebook.name}`} 
+                    className='h-full'
+                >
+                {notebook.name}
+            </Link>
+        </div>
+        </>
+    )
+}
 
 export function Notebooks(){
     const [isOpen, setIsOpen]= useState()
-    const {userNotebooks} = useAuth()
-    
-    const updateNotebook = (notebook)=> {
-        saveCurrNotebook(notebook) 
-    }
+    const {user} = useAuth()
+    const {userNotebooks, getNotebooks, isLoading} = useNotebooks()
+    useEffect(()=> {
+        getNotebooks()
+    },[user])
+    if(isLoading) return <div className="">Loading...</div>
     return (
         <>
         <div className="flex flex-col justify-center items-center 
@@ -56,13 +85,8 @@ export function Notebooks(){
             </div>
             <div className="h-400 w-full flex flex-wrap justify-start gap-5 
                 ">
-                {userNotebooks && userNotebooks.map((notebook) => {
-                    return <Link key={notebook.name} onClick={()=>{updateNotebook(notebook)}}
-                            to={`/notebooks/${notebook.name}`} 
-                        className="bg-(--green) w-40 h-50">
-                        {notebook.name}
-                    </Link>
-                    }
+                {userNotebooks && userNotebooks.map((notebook) => 
+                    <Notebook notebook={notebook} key={notebook.name}/>
                 )}
             </div>
         </div>

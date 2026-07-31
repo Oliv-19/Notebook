@@ -24,3 +24,10 @@ export const getCurrNotebook = () => {
     const notebook = localStorage.getItem('notebook')
     return JSON.parse(notebook)
 }
+
+export const deleteNotebook = async(id) => {
+    const response = await fetch(`/api/delete-notebook/${id}`)
+    
+    const data = await response.json()
+    return data
+}
