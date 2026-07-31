@@ -3,7 +3,7 @@ import { useCanvas } from "../Canvas/CanvasContext"
 import { useEffect } from "react"
 
 export function Setting(){
-    const {canvas} = useCanvas()
+    const {canvas, isSelectionMode} = useCanvas()
     const [selectedObjs, setSelectedObjs] = useState(null)
     const [color, setColor] = useState('#000000')
 
@@ -16,7 +16,7 @@ export function Setting(){
                 reset()
             })
         }
-    }, [canvas])
+    }, [canvas, isSelectionMode])
     const reset = () => {
         if(selectedObjs) {
             setSelectedObjs(null)

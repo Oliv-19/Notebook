@@ -15,9 +15,9 @@ function Content(){
     <>
     <div className="flex justify-center items-center w-full">
       <PdfViewer/>
-      <div className="h-screen w-fit">
+      <div className="h-screen w-full flex flex-col">
         <CanvasNav/>
-        <div className="relative min-h-screen h-fit">
+        <div className="relative h-[92%]">
           <Canvas/>
         </div>
       </div>

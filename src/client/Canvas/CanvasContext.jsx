@@ -53,23 +53,28 @@ export function CanvasProvider({children}){
         }
     }, [pdf, canvas])
 
+    const events= {
+        undo: {shortcut: 'ctrl+z', callback: ()=>{setCanvas('UNDO', canvasState)} },
+        redo: {shortcut: 'ctrl+y', callback: ()=>{setCanvas('REDO', canvasState)} },
+        select: {shortcut: 'v', callback: ()=>{setCanvas('SELECT_MODE', true)} },
+        draw: {shortcut: 'b', callback: ()=>{setCanvas('SELECT_MODE', false)} },
+        delete: {shortcut: 'Delete', callback: ()=>{setCanvas('DELETE', canvasState)} },
+    }
+
     const canvasInfo = {
         setCanvasSize: (width, height)=> {setCanvas('SET_DIMENSIONS', {width, height})},
-        undo: ()=> {setCanvas('UNDO', canvasState)},
-        redo: ()=> {setCanvas('REDO', canvasState)},
         canvas: canvas,
         setCanvas: (canvas)=> {setCanvas('SET_CANVAS', canvas)},
         saveHistory: (canvas)=> {
             const json = JSON.stringify(canvas.toJSON())
             setCanvas('SAVE_HISTORY', json)
         },
-        selectMode: (isSelection)=> {setCanvas('SELECT_MODE', isSelection)},
         isSelectionMode: isSelection,
-        deleteSelection : () => {setCanvas('DELETE', canvasState)},
         uploadPdf: (url)=> {setPDF(url)},
         pdf,
         pdfUrl,
-        resetPdf: ()=> {dispatchPdf({type:'RESET_PDF', payload: null})}
+        resetPdf: ()=> {dispatchPdf({type:'RESET_PDF', payload: null})},
+        events
     }
     return (
         <CanvasContext value={canvasInfo}>

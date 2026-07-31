@@ -2,21 +2,17 @@ import { useState } from "react"
 import { useCanvas } from "../Canvas/CanvasContext"
 
 export function Button({type}){
-    const {undo, redo, selectMode, deleteSelection} = useCanvas()
-    const events = {
-        undo: () => {undo()},
-        redo: ()=>  {redo()},
-        select: ()=> {selectMode(true)},
-        draw: ()=> {selectMode(false)},
-        delete: ()=> {deleteSelection(false)},
+    const {events} = useCanvas()
+    const handleClick = ()=>{
+        events[type].callback()
     }
     
     return (
         <>
         <button 
-            onClick={events[type]}>
+            onClick={handleClick}>
             {type}
         </button>
         </>
     )
-}
+} 

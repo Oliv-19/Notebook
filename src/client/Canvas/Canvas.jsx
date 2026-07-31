@@ -27,25 +27,15 @@ export function Canvas(){
     const fabricCanvasRef = useRef(null)
     const isExpanding = useRef(false)
     const {
-        undo, 
-        redo,
         canvas, 
         setCanvas,
         saveHistory,
-        selectMode,
-        deleteSelection,
         uploadPdf,
         resetPdf,
-        resizeCanvas
+        resizeCanvas,
+        events
     } = useCanvas()
-    const keyDownMap= {
-        'ctrl+z': ()=>{undo(canvas)},
-        'ctrl+y': ()=>{redo(canvas)},
-        'v': ()=>{selectMode(true)},
-        'b': ()=>{selectMode(false)},
-        'Delete': ()=>{deleteSelection()},
-    }
-    useShortcut(keyDownMap)
+    useShortcut(events)
     useEffect(()=> {
         const initCanvas = async()=>{
             const dpr = window.devicePixelRatio
@@ -113,7 +103,7 @@ export function Canvas(){
 
     return (
         <>
-        <div onScroll={handleScroll} className={`h-138 w-full overflow-y-scroll 
+        <div onScroll={handleScroll} className={`h-full w-full overflow-y-scroll
             transition-all duration-500 flex justify-end`}>
             <canvas className="" ref={canvasRef}/>
         </div> 

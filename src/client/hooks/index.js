@@ -19,7 +19,7 @@ export function useShortcut(keyDownMap){
             cmd: e.metaKey,
             shift: e.shiftKey
         }
-        Object.entries(mapRef.current).forEach(([shortcut, callback])=> {
+         Object.entries(mapRef.current).forEach(([key, {shortcut, callback}])=> {
             if(shortcut.includes('+')){
                 const keysArray = shortcut.split('+')
                 if(modifiers[keysArray[0]] && e.key == keysArray[1]){
