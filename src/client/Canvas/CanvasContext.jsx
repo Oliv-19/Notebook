@@ -42,15 +42,15 @@ export function CanvasProvider({children}){
     }
     
     useEffect(()=> {
-        if(!canvas) return
-        if(pdf){
-            
-            const width = window.screen.width / 2
-            const height = canvas.height
-            setCanvas('SET_DIMENSIONS', {width:width+50, height:height})
-
+        if(canvas) {
+            if(pdf){
+                
+                const width = window.screen.width / 2
+                const height = canvas.height
+                setCanvas('SET_DIMENSIONS', {width:width+50, height:height})
+                canvas.renderAll()
+            }
         }
-        canvas.renderAll()
     }, [pdf, canvas])
 
     const canvasInfo = {
