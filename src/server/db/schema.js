@@ -19,6 +19,17 @@ export const userNotebook = sqliteTable('notebook_user', {
     userId: integer('user_id').notNull().references(() => users.id, {onDelete: 'cascade'}),
     name: text('name').default(new Date().toLocaleDateString()),
     canvasInfo: text('canvas_info'),
+    createdAt: integer('created_at', { mode: "timestamp" })
+        .notNull()
+        .default(new Date()),
+    updatedAt: integer('updated_at', { mode: "timestamp" })
+        .notNull()
+        .default(new Date()) 
+})
+
+export const notebookFiles = sqliteTable('notebook_files', {
+    id: integer('id').primaryKey(),
+    notebookId: integer('notebook_id').notNull().references(()=> userNotebook.id, {onDelete:'cascade'}),
     pdfUrl: text('pdf_url'),
     createdAt: integer('created_at', { mode: "timestamp" })
         .notNull()
@@ -30,4 +41,15 @@ export const userNotebook = sqliteTable('notebook_user', {
 
 export const userNotebookRelations = relations(userNotebook, ({ one }) => ({
   notebook: one(users, { fields: [userNotebook.userId], references: [users.id] }),
+  file: one(notebookFiles, {
+    fields: [userNotebook.id],
+    references: [notebookFiles.notebookId]
+  })
+}));
+
+export const notebookFilesRelations = relations(notebookFiles, ({ one }) => ({
+  notebook: one(userNotebook, { 
+    fields: [notebookFiles.notebookId], 
+    references: [userNotebook.id] 
+    }),
 }));

@@ -64,6 +64,13 @@
       "when": 1785078856059,
       "tag": "0008_fixed_the_professor",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1785584417548,
+      "tag": "0009_jittery_miss_america",
+      "breakpoints": true
     }
   ]
 }

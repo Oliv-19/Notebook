@@ -55,7 +55,7 @@ function Notebook({notebook}){
             </button>
             <Link onClick={()=>{updateNotebook(notebook)}}
                     to={`/notebooks/${notebook.name}`} 
-                    className='h-full'
+                    className='h-full w-full'
                 >
                 {notebook.name}
             </Link>

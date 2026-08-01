@@ -3,6 +3,7 @@ import { useAuth } from "../AuthContext"
 import { useCanvas } from "../Canvas/CanvasContext"
 import { saveCanvas } from "../services/canvas"
 import { getCurrNotebook } from "../services/notebooks"
+import { savePdf } from "../services/pdfs"
 
 export function SaveButton(){
     const {canvas, pdfUrl} = useCanvas()
@@ -12,7 +13,10 @@ export function SaveButton(){
     const save = async()=> {
         if(!user) navigate('/login')
         const notebook = getCurrNotebook()
-        await saveCanvas(canvas, notebook.id, (pdfUrl?.type !== 'application/pdf' && pdfUrl))
+        await saveCanvas(canvas, notebook.id)
+        if(pdfUrl && pdfUrl.type !== 'application/pdf'){
+            await savePdf(pdfUrl, notebook.id)
+        }
     }
     return (
         <>
