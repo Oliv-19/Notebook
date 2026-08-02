@@ -40,14 +40,12 @@ export function Options(){
                         <SaveButton/>
                         <button 
                             onClick={()=>{setopenImportPDF(prev =>!prev)}}
-                            className="w-30 h-10 text-(--color-text) flex flex-row items-center 
-                            justify-evenly cursor-pointer font-medium">
+                            className="optionStyle">
                             <p>Import PDF</p>
                         </button>
                         <button 
                             onClick={()=>{setopenImportIMG(prev =>!prev)}}
-                            className="w-30 h-10 text-(--color-text) flex flex-row items-center 
-                            justify-evenly cursor-pointer font-medium">
+                            className="optionStyle">
                             <p>Import IMG</p>
                         </button>
                         <LogoutButton/>

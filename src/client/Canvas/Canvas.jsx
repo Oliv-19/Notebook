@@ -36,6 +36,7 @@ export function Canvas(){
         events
     } = useCanvas()
     useShortcut(events)
+    const notebook =  getCurrNotebook()
     useEffect(()=> {
         const initCanvas = async()=>{
             const dpr = window.devicePixelRatio
@@ -50,18 +51,17 @@ export function Canvas(){
             fabricCanvasRef.current=fabricCanvas
             configureCanvas(fabricCanvas, saveHistory)
             setCanvas(fabricCanvas) 
-            const notebook =  getCurrNotebook()
             if(notebook){
-                const {savedCanvas, pdf} = await getCanvas(notebook.id)
-                if(pdf){
-                    uploadPdf(pdf)
-
-                } 
-                if(savedCanvas){ 
-                    fabricCanvas.loadFromJSON(savedCanvas, (obj)=> {
-                        fabricCanvas.renderAll()
-                        fabricCanvas.requestRenderAll()
-                    },)
+                const savedObj = await getCanvas(notebook.id)
+                if(savedObj){
+                    const {savedCanvas, pdf} = savedObj
+                    pdf && uploadPdf(pdf)
+                    savedCanvas && fabricCanvas.loadFromJSON(savedCanvas, (obj)=> {
+                            fabricCanvas.renderAll()
+                            fabricCanvas.requestRenderAll()
+                        }
+                    )
+                    
                 }
             }
         }

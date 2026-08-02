@@ -20,7 +20,7 @@ export function SaveButton(){
     }
     return (
         <>
-        <button onClick={save}>Save</button>
+        <button onClick={save} className="optionStyle">Save</button>
         </>
     )
 }
