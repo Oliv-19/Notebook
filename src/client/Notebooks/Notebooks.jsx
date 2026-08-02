@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import {Link, useNavigate} from 'react-router'
-import { createNB, deleteNotebook, saveCurrNotebook } from '../services/notebooks'
+import { changeNotebookName, createNB, deleteNotebook, saveCurrNotebook } from '../services/notebooks'
 import { useAuth } from '../AuthContext'
 import { useCanvas } from '../Canvas/CanvasContext'
 import { useNotebooks } from './NotebooksContext'
@@ -38,6 +38,8 @@ function NewNotebookModal({close}){
     )
 }
 function Notebook({notebook}){
+    const [isEdit, setIsEdit]= useState(false)
+    const [newName, setNewName]= useState(notebook.name)
     const {getNotebooks} = useNotebooks()
     const updateNotebook = ()=> {
         saveCurrNotebook(notebook) 
@@ -46,19 +48,45 @@ function Notebook({notebook}){
         await deleteNotebook(notebook.id)
         getNotebooks()
     }
+    const edit = async()=> {
+        setIsEdit(false)
+        await changeNotebookName(notebook.id, newName)
+        setNewName(notebook.name)
+        getNotebooks()
+    }
     return(
         <>
         <div className="bg-(--green) w-40 h-50 flex flex-col items-center">
-            <button onClick={delNotebook} 
-                className='cursor-pointer w-5 h-5 bg-white'>
-                    X
-            </button>
-            <Link onClick={()=>{updateNotebook(notebook)}}
-                    to={`/notebooks/${notebook.name}`} 
-                    className='h-full w-full'
-                >
-                {notebook.name}
-            </Link>
+            <div className="flex gap-2">
+                <button onClick={delNotebook} 
+                    className='cursor-pointer w-5 h-5 bg-white'>
+                        X
+                </button>
+                <button onClick={()=> {setIsEdit(prev => !prev)}} 
+                    className='cursor-pointer w-fit h-5 bg-white'>
+                        Edit
+                </button>
+            </div>
+            {isEdit ? (
+                <>
+                <div className="h-full w-full">
+                    <input type="text" value={newName} 
+                        onChange={(e)=> {setNewName(e.target.value)}}
+                        className='border w-full'/>
+                    <button onClick={edit}>Save</button>
+                </div>
+                </>
+            ) : (
+                <>
+                    <Link onClick={()=>{updateNotebook(notebook)}}
+                            to={`/notebooks/${notebook.name}`} 
+                            className='h-full w-full'
+                        >
+                        {notebook.name}
+                    </Link>
+                </>
+            )
+            }
         </div>
         </>
     )

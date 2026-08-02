@@ -31,3 +31,12 @@ export const deleteNotebook = async(id) => {
     const data = await response.json()
     return data
 }
+
+export const changeNotebookName = async(id, newName) => {
+    const response = await fetch(`/api/edit-notebook`, {
+        method: 'PUT',
+        body: JSON.stringify({notebookId: id, newName})
+    })
+    if(!response.ok) return null
+    return 
+}

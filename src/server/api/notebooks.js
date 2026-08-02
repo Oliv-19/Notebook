@@ -105,6 +105,30 @@ notebooksApi.get('/api/notebook', auth, async (c) => {
     }
     
 })
+notebooksApi.put('/api/edit-notebook', auth, async (c) => {
+    const {notebookId, newName} = await c.req.json()
+    const db = drizzle(c.env.DB, {schema})
+    const user = c.get('user')
+    
+    try{
+        if(!user) return c.json({success:false, error: 'User not found'}, 404)
+        
+        const notebook = await db.update(schema.userNotebook)
+        .set({name: newName})
+        .where(and(
+            eq(schema.userNotebook.userId, user.id),
+            eq(schema.userNotebook.id, notebookId),
+        ))
+        
+        return c.json({success: true}, 201)
+
+    } catch (e){
+        console.error(e)
+        return c.json({success:false}, 400)
+        
+    }
+    
+})
 
 notebooksApi.delete('/api/notebook', async(c) => {
     const db = drizzle(c.env.DB, schema)
