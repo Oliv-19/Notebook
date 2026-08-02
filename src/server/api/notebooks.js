@@ -74,8 +74,8 @@ notebooksApi.get('/api/get-note/:id', auth, async (c) => {
             }
         })
         if(!notebook) return c.json({success:false ,error:'Notebook not found'}, 400)
-        
-        return c.json({canvas: notebook.canvasInfo, pdf: notebook.file.pdfUrl}, 200)
+        const file = notebook.file?.pdfUrl
+        return c.json({canvas: notebook.canvasInfo, pdf: file}, 200)
 
     } catch (e){
         console.error(e)

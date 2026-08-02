@@ -96,6 +96,25 @@ export function canvasInstanceReducer(state, action){
                     canvas.renderAll()
                 }
             }
+        }
+        case 'UPLOAD_IMG':{
+            const data = action.payload
+            const {canvas} = state
+            if(canvas){
+                const url = URL.createObjectURL(data)
+                fabric.FabricImage.fromURL(url)
+                  .then(img => {
+                    img.set({
+                        left: 320,
+                        top: 450,
+                        scaleX: 0.5,
+                        scaleY: 0.5
+                    })
+                    canvas.add(img)
+                    canvas.renderAll()
+                  })              
+                return {...state}
+            }
         }   
         default:
             return state

@@ -3,13 +3,16 @@ import { useAuth } from "../AuthContext"
 import { SaveButton } from "./SaveButton"
 import { ImportPDF } from "./ImportPDF"
 import { LogoutButton } from "./LogoutButton"
+import { ImportIMG } from "./ImportIMG"
 
 export function Options(){
     const [openDropdown, setOpenDropdown] = useState(false)
     const [openImportPDF, setopenImportPDF] = useState(false)
+    const [openImportIMG, setopenImportIMG] = useState(false)
     const close = ()=> {
         setOpenDropdown(false)
         setopenImportPDF(false)
+        setopenImportIMG(false)
     }
     return (
         <>
@@ -41,9 +44,16 @@ export function Options(){
                             justify-evenly cursor-pointer font-medium">
                             <p>Import PDF</p>
                         </button>
+                        <button 
+                            onClick={()=>{setopenImportIMG(prev =>!prev)}}
+                            className="w-30 h-10 text-(--color-text) flex flex-row items-center 
+                            justify-evenly cursor-pointer font-medium">
+                            <p>Import IMG</p>
+                        </button>
                         <LogoutButton/>
                     </div>
                     <ImportPDF isOpen={openImportPDF} close={close}/>
+                    <ImportIMG isOpen={openImportIMG} close={close}/>
                 </div>
 
                 }

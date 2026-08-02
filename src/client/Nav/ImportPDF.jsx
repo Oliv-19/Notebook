@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useCanvas } from "../Canvas/CanvasContext"
 import { getPdf } from "../services/pdfs"
+import { ImportModal } from "./ImportModal";
 
 export function ImportPDF({isOpen, close}){
     const {uploadPdf} = useCanvas()
@@ -18,25 +19,17 @@ export function ImportPDF({isOpen, close}){
     }
     return (
         <>
-        {isOpen && 
-            <>  
-            <div className="w-full h-full m-auto flex justify-center items-center">
-                    <div className="bg-purple-100 w-150 h-50 z-3">
-                    <form className="w-full h-full" onSubmit={submitPdf} action="">
-                        <input type="text" name="pdfWeb" id="pdfWeb"/>
-                        
-                        <label className="flex flex-col">
-                            Import PDF from your computer
-                            <input type="file" name="pdf" className="hidden"/>
-                        </label>
-                        <button type="submit" className="border">
-                            Import
-                        </button>
-                    </form>
-                </div>
-            </div>
-            </>
-        }
+        <ImportModal isOpen={isOpen} onSubmit={submitPdf}>
+            <input type="text" name="pdfWeb" id="pdfWeb"/>
+            
+            <label className="flex flex-col">
+                Import PDF from your computer
+                <input type="file" name="pdf" className="hidden"/>
+            </label>
+            <button type="submit" className="border">
+                Import
+            </button>
+        </ImportModal>
         </>
     )
 }
