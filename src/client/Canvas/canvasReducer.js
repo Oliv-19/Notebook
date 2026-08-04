@@ -98,21 +98,60 @@ export function canvasInstanceReducer(state, action){
             }
         }
         case 'UPLOAD_IMG':{
-            const data = action.payload
+            const {data, hiddenCanvas} = action.payload
             const {canvas} = state
             if(canvas){
-                const url = URL.createObjectURL(data)
-                fabric.FabricImage.fromURL(url)
-                  .then(img => {
-                    img.set({
-                        left: 320,
-                        top: 450,
-                        scaleX: 0.5,
-                        scaleY: 0.5
-                    })
-                    canvas.add(img)
-                    canvas.renderAll()
-                  })              
+                const reader = new FileReader()
+                reader.readAsDataURL(data)
+                reader.onload = (url)=>{
+                    const base64URL = url.target.result
+                    
+                    const img = new Image()
+                    if(data.type.includes('image')){
+                        img.src = base64URL
+                        img.onload= () => {
+                            const maxWidth = 800
+                            let width = img.width 
+                            let height = img.height 
+                            if(width > maxWidth){
+                                height = Math.round((height * maxWidth) / width)
+                                width = maxWidth
+                            }
+                            hiddenCanvas.width = width
+                            hiddenCanvas.height = height
+                            const ctx = hiddenCanvas.getContext('2d')
+                            ctx.drawImage(img, 0 , 0, width, height)
+                            const base64 = hiddenCanvas.toDataURL('image/jpeg', 0.1)
+                            
+                            fabric.FabricImage.fromURL(base64)
+                            .then(img => {
+                                img.set({
+                                    left: 320,
+                                    top: 450,
+                                    scaleX: 0.5,
+                                    scaleY: 0.5
+                                })
+                                canvas.add(img)
+                                canvas.renderAll()
+                            }, {crossOrigin: 'anonymous'})        
+                        }   
+                    }else {
+                        fabric.FabricImage.fromURL(base64URL)
+                          .then(img => {
+                            img.set({
+                                left: 320,
+                                top: 450,
+                                scaleX: 0.5,
+                                scaleY: 0.5
+                            })
+                            canvas.add(img)
+                            canvas.renderAll()
+                          }, {crossOrigin: 'anonymous'})              
+
+                    }
+
+
+                }
                 return {...state}
             }
         }   

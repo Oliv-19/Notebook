@@ -71,7 +71,7 @@ export function CanvasProvider({children}){
         },
         isSelectionMode: isSelection,
         uploadPdf: (url)=> {setPDF(url)},
-        uploadImg: (url)=> {setCanvas('UPLOAD_IMG', url)},
+        uploadImg: (data, hiddenCanvas)=> {setCanvas('UPLOAD_IMG', {data, hiddenCanvas})},
         pdf,
         pdfUrl,
         resetPdf: ()=> {dispatchPdf({type:'RESET_PDF', payload: null})},
