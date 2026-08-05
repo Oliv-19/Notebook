@@ -101,13 +101,13 @@ export function canvasInstanceReducer(state, action){
             const {data, hiddenCanvas} = action.payload
             const {canvas} = state
             if(canvas){
-                const reader = new FileReader()
-                reader.readAsDataURL(data)
-                reader.onload = (url)=>{
-                    const base64URL = url.target.result
+                if(data.type?.includes('image')){
+                    const reader = new FileReader()
+                    reader.readAsDataURL(data)
+                    reader.onload = (url)=>{
+                        const base64URL = url.target.result
                     
-                    const img = new Image()
-                    if(data.type.includes('image')){
+                        const img = new Image()
                         img.src = base64URL
                         img.onload= () => {
                             const maxWidth = 800
@@ -135,21 +135,19 @@ export function canvasInstanceReducer(state, action){
                                 canvas.renderAll()
                             }, {crossOrigin: 'anonymous'})        
                         }   
-                    }else {
-                        fabric.FabricImage.fromURL(base64URL)
-                          .then(img => {
-                            img.set({
-                                left: 320,
-                                top: 450,
-                                scaleX: 0.5,
-                                scaleY: 0.5
-                            })
-                            canvas.add(img)
-                            canvas.renderAll()
-                          }, {crossOrigin: 'anonymous'})              
-
                     }
-
+                }else {
+                    fabric.FabricImage.fromURL(data, {crossOrigin: 'anonymous'})
+                      .then(img => {
+                        img.set({
+                            left: 320,
+                            top: 450,
+                            scaleX: 0.5,
+                            scaleY: 0.5
+                        })
+                        canvas.add(img)
+                        canvas.renderAll()
+                      })              
 
                 }
                 return {...state}
