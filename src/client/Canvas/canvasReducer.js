@@ -29,6 +29,7 @@ export function canvasInstanceReducer(state, action){
                 canvas.setZoom(canvas.getZoom() * scale)
             }
             return {...state, dimensions:{w: width, h: height}}
+            break
             case 'UNDO': {
             const {canvas} = state
             if(canvas){
@@ -95,12 +96,14 @@ export function canvasInstanceReducer(state, action){
                     })
                     canvas.renderAll()
                 }
+                return {...state}
             }
+            break
         }
         case 'UPLOAD_IMG':{
             const {data, hiddenCanvas} = action.payload
             const {canvas} = state
-            if(canvas){
+            if(canvas && hiddenCanvas){
                 const reader = new FileReader()
                 reader.readAsDataURL(data)
                 reader.onload = (url)=>{
@@ -154,6 +157,7 @@ export function canvasInstanceReducer(state, action){
                 }
                 return {...state}
             }
+            break
         }   
         default:
             return state
@@ -167,9 +171,11 @@ export function pdfReducer(state, action) {
             const data = action.payload
             const url = URL.createObjectURL(data)
             return {...state, pdf: url}
+            break
         }
         case 'RESET_PDF':{
             return {...state, pdf: null}
+            break
         }
         default:
             return state

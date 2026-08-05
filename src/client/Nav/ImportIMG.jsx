@@ -5,7 +5,6 @@ import { ImportModal } from "./ImportModal";
 import { useRef } from "react";
 
 export function ImportIMG({isOpen, close}){
-    const hiddenCanvasRef = useRef()
     const {uploadImg} = useCanvas()
     const submitImg = async(e) => {
         e.preventDefault()
@@ -14,7 +13,7 @@ export function ImportIMG({isOpen, close}){
         const fileWeb = formData.get('imgWeb')
         
         if(file && file.type.includes('image')){
-            uploadImg(file, hiddenCanvasRef.current)
+            uploadImg(file)
         }else if(fileWeb){
             uploadImg(fileWeb) 
         }
@@ -22,7 +21,6 @@ export function ImportIMG({isOpen, close}){
     }
     return (
         <>
-        <canvas ref={hiddenCanvasRef} className="hidden" />
         <ImportModal isOpen={isOpen} onSubmit={submitImg} fileName={'Image'}>
             <input type="text" name='imgWeb' id="imgWeb"/>
             

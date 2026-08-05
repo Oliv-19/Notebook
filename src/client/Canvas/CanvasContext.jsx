@@ -2,7 +2,7 @@ import { useReducer } from "react"
 import { useState, useEffect, createContext, useContext } from "react"
 import { canvasInstanceReducer, pdfReducer } from "./canvasReducer"
 import { getPdf } from "../services/pdfs"
-import { useLocation } from "react-router"
+import { useRef } from "react"
 
 const CanvasContext = createContext()
 const initStateCanvas = {
@@ -21,10 +21,11 @@ const initStatePdf = {
 export function CanvasProvider({children}){
     const [canvasState, dispatchCanvas] = useReducer(canvasInstanceReducer, initStateCanvas)
     const [pdfState, dispatchPdf] = useReducer(pdfReducer, initStatePdf)
-    const location = useLocation()
     const { canvas, isSelection} = canvasState
     const { pdf }= pdfState
     const [pdfUrl, setPdfUrl] = useState(null)
+    const hiddenCanvasRef = useRef()
+
     const setCanvas = (type, payload)=> {
         dispatchCanvas({type, payload})
     }
@@ -59,8 +60,22 @@ export function CanvasProvider({children}){
         select: {shortcut: 'v', callback: ()=>{setCanvas('SELECT_MODE', true)} },
         draw: {shortcut: 'b', callback: ()=>{setCanvas('SELECT_MODE', false)} },
         delete: {shortcut: 'Delete', callback: ()=>{setCanvas('DELETE', canvasState)} },
-    }
+        paste: {shortcut: 'Paste', callback: (clipboardData)=>{
+            console.log('paste');
+            const items = clipboardData.items
+            if (!items) return
+            for(const item of items){
+                
+                if(item.type.indexOf('image') !== -1){
+                    const file = item.getAsFile()
+                    if(file){
+                        canvasInfo.uploadImg(file)
+                    } 
+                }
 
+            }
+        } },
+    }
     const canvasInfo = {
         setCanvasSize: (width, height)=> {setCanvas('SET_DIMENSIONS', {width, height})},
         canvas: canvas,
@@ -71,9 +86,10 @@ export function CanvasProvider({children}){
         },
         isSelectionMode: isSelection,
         uploadPdf: (url)=> {setPDF(url)},
-        uploadImg: (data, hiddenCanvas)=> {setCanvas('UPLOAD_IMG', {data, hiddenCanvas})},
+        uploadImg: (data)=> {setCanvas('UPLOAD_IMG', {data, hiddenCanvas: hiddenCanvasRef.current})},
         pdf,
         pdfUrl,
+        hiddenCanvasRef,
         resetPdf: ()=> {dispatchPdf({type:'RESET_PDF', payload: null})},
         events
     }

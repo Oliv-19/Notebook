@@ -33,7 +33,8 @@ export function Canvas(){
         uploadPdf,
         resetPdf,
         resizeCanvas,
-        events
+        events,
+        hiddenCanvasRef
     } = useCanvas()
     useShortcut(events)
     const notebook =  getCurrNotebook()
@@ -106,6 +107,7 @@ export function Canvas(){
         <div onScroll={handleScroll} className={`h-full w-full overflow-y-scroll
             transition-all duration-500 flex justify-end`}>
             <canvas className="" ref={canvasRef}/>
+            <canvas ref={hiddenCanvasRef} className="hidden" />
         </div> 
         </>
     )

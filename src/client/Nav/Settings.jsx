@@ -5,6 +5,7 @@ import { useEffect } from "react"
 export function Setting(){
     const {canvas, isSelectionMode} = useCanvas()
     const [selectedObjs, setSelectedObjs] = useState(null)
+    const [showSettings, setShowSettings] = useState(false)
     const [color, setColor] = useState('#000000')
 
     useEffect(()=> {
@@ -21,10 +22,11 @@ export function Setting(){
         if(selectedObjs) {
             setSelectedObjs(null)
         } 
+        setShowSettings(false)
     }
     const handleObjSelection = (objs)=> {
         if(!objs) return 
-        
+        setShowSettings(true)
         setSelectedObjs(objs)
         setColor(objs[0].stroke)
     }
@@ -42,11 +44,12 @@ export function Setting(){
     return (
         <>
         <div className="bg-(--green) absolute top-20 right-10 z-4">
-            {selectedObjs &&
+            {showSettings && (isSelectionMode && 
                 <div className="">
                     <p>Color: <span>{color}</span></p>
                     <input type="color" name="selectedColor" value={color} onChange={handleColorChange}/>
                 </div>
+            )
             }
         </div>
         </>
