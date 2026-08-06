@@ -7,12 +7,8 @@ import { ImportIMG } from "./ImportIMG"
 
 export function Options(){
     const [openDropdown, setOpenDropdown] = useState(false)
-    const [openImportPDF, setopenImportPDF] = useState(false)
-    const [openImportIMG, setopenImportIMG] = useState(false)
     const close = ()=> {
         setOpenDropdown(false)
-        setopenImportPDF(false)
-        setopenImportIMG(false)
     }
     return (
         <>
@@ -38,20 +34,11 @@ export function Options(){
                         dark:[&::-webkit-scrollbar-thumb]:bg-neutral-400`}
                         >
                         <SaveButton/>
-                        <button 
-                            onClick={()=>{setopenImportPDF(prev =>!prev)}}
-                            className="optionStyle">
-                            <p>Import PDF</p>
-                        </button>
-                        <button 
-                            onClick={()=>{setopenImportIMG(prev =>!prev)}}
-                            className="optionStyle">
-                            <p>Import IMG</p>
-                        </button>
+                        <ImportPDF close={close}/>
+
+                        <ImportIMG close={close}/>
                         <LogoutButton/>
                     </div>
-                    <ImportPDF isOpen={openImportPDF} close={close}/>
-                    <ImportIMG isOpen={openImportIMG} close={close}/>
                 </div>
 
                 }

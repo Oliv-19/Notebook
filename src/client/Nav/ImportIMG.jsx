@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useCanvas } from "../Canvas/CanvasContext"
 import { getPdf } from "../services/pdfs"
-import { ImportModal } from "./ImportModal";
 import { useRef } from "react";
+import { Accordion } from "./Accordion";
 
 export function ImportIMG({isOpen, close}){
     const {uploadImg} = useCanvas()
@@ -21,17 +21,19 @@ export function ImportIMG({isOpen, close}){
     }
     return (
         <>
-        <ImportModal isOpen={isOpen} onSubmit={submitImg} fileName={'Image'}>
-            <input type="text" name='imgWeb' id="imgWeb"/>
-            
-            <label className="flex flex-col">
-                Import Image from your computer
-                <input type="file" name="img" className="hidden"/>
-            </label>
-            <button type="submit" className="border">
-                Import
-            </button>
-        </ImportModal>
+        <Accordion buttonTitle={'Import Img'}>
+            <form className="w-full h-full" onSubmit={submitImg} action="">
+                <input type="text" name='imgWeb' id="imgWeb"/>
+                
+                <label className="flex flex-col">
+                    Import Image from your computer
+                    <input type="file" name="img" className="hidden"/>
+                </label>
+                <button type="submit" className="border">
+                    Import
+                </button>
+            </form>
+        </Accordion>
         </>
     )
 }

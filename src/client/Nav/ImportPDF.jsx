@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useCanvas } from "../Canvas/CanvasContext"
 import { getPdf } from "../services/pdfs"
-import { ImportModal } from "./ImportModal";
+import { Accordion } from "./Accordion";
 
 export function ImportPDF({isOpen, close}){
+    const [openImportPDF, setopenImportPDF] = useState(false)
     const {uploadPdf} = useCanvas()
     const submitPdf = async(e) => {
         e.preventDefault()
@@ -19,9 +20,11 @@ export function ImportPDF({isOpen, close}){
     }
     return (
         <>
-        <ImportModal isOpen={isOpen} onSubmit={submitPdf}>
+        <Accordion buttonTitle={'Import Pdf'}>
+            <form className="w-full h-full" onSubmit={submitPdf} action="">
+
             <input type="text" name="pdfWeb" id="pdfWeb"/>
-            
+    
             <label className="flex flex-col">
                 Import PDF from your computer
                 <input type="file" name="pdf" className="hidden"/>
@@ -29,7 +32,8 @@ export function ImportPDF({isOpen, close}){
             <button type="submit" className="border">
                 Import
             </button>
-        </ImportModal>
+            </form>
+        </Accordion>
         </>
     )
 }

@@ -5,7 +5,8 @@ import { useShortcut } from "../hooks/index"
 import { getCanvas } from "../services/canvas"
 import { getCurrNotebook } from "../services/notebooks"
 
-function configureCanvas(canvas, saveHistory){
+function configureCanvas(canvas, canvasInfo){
+    const { saveHistory } = canvasInfo
     canvas.freeDrawingBrush = new fabric.PencilBrush(canvas)
     canvas.freeDrawingBrush.decimate = 8
     canvas.freeDrawingBrush.color = '#000000'
@@ -22,61 +23,63 @@ function configureCanvas(canvas, saveHistory){
     })
 }
 
+async function initCanvas(canvasRef, fabricCanvasRef, canvasInfo){
+    const notebook =  getCurrNotebook()
+    const { setCanvas } = canvasInfo
+    const dpr = window.devicePixelRatio
+    const fabricCanvas = new fabric.Canvas(canvasRef.current, {
+        isDrawingMode:true,
+        enableRetinaScaling: true,
+    }) 
+    fabricCanvas.setDimensions({
+        width: window.innerWidth -15, 
+        height: 2000
+    })
+    fabricCanvasRef.current=fabricCanvas
+    configureCanvas(fabricCanvas, canvasInfo)
+    setCanvas(fabricCanvas) 
+    if(notebook){
+        const savedObj = await getCanvas(notebook.id)
+        if(savedObj){
+            const {savedCanvas, pdf} = savedObj
+            pdf && uploadPdf(pdf)
+            savedCanvas && fabricCanvas.loadFromJSON(savedCanvas, (obj)=> {
+                    fabricCanvas.renderAll()
+                    fabricCanvas.requestRenderAll()
+                }
+            )
+            
+        }
+    }
+}
+
+function resizeCanvas(fabricCanvas) {
+    if(fabricCanvas){
+        fabricCanvas.setDimensions({width: window.innerWidth - 15, height: fabricCanvas.height});
+        fabricCanvas.calcOffset(); 
+        fabricCanvas.requestRenderAll();
+    }
+}
+
 export function Canvas(){
     const canvasRef = useRef(null)
     const fabricCanvasRef = useRef(null)
     const isExpanding = useRef(false)
+    const canvasInfo = useCanvas()
     const {
         canvas, 
-        setCanvas,
-        saveHistory,
-        uploadPdf,
         resetPdf,
-        resizeCanvas,
         events,
         hiddenCanvasRef
-    } = useCanvas()
+    } = canvasInfo
     useShortcut(events)
-    const notebook =  getCurrNotebook()
+
     useEffect(()=> {
-        const initCanvas = async()=>{
-            const dpr = window.devicePixelRatio
-            const fabricCanvas = new fabric.Canvas(canvasRef.current, {
-                isDrawingMode:true,
-                enableRetinaScaling: true,
-            }) 
-            fabricCanvas.setDimensions({
-                width: window.innerWidth -15, 
-                height: 2000
-            })
-            fabricCanvasRef.current=fabricCanvas
-            configureCanvas(fabricCanvas, saveHistory)
-            setCanvas(fabricCanvas) 
-            if(notebook){
-                const savedObj = await getCanvas(notebook.id)
-                if(savedObj){
-                    const {savedCanvas, pdf} = savedObj
-                    pdf && uploadPdf(pdf)
-                    savedCanvas && fabricCanvas.loadFromJSON(savedCanvas, (obj)=> {
-                            fabricCanvas.renderAll()
-                            fabricCanvas.requestRenderAll()
-                        }
-                    )
-                    
-                }
-            }
-        }
-        initCanvas()
-        function handleWindowResize() {
-            if(fabricCanvasRef.current){
-                fabricCanvasRef.current.setDimensions({width: window.innerWidth - 15, height: fabricCanvasRef.current.height});
-                fabricCanvasRef.current.calcOffset(); 
-                fabricCanvasRef.current.requestRenderAll();
-            }
-        }
-        window.addEventListener('resize', handleWindowResize) 
+        initCanvas(canvasRef, fabricCanvasRef, canvasInfo)
+        const handleWindowResize = ()=>{ resizeCanvas(fabricCanvasRef.current) }
+        window.addEventListener('resize', handleWindowResize ) 
         return () => {
-            window.removeEventListener('resize', handleWindowResize)
+            window.removeEventListener('resize', handleWindowResize )
             if(canvas) canvas.dispose()
             resetPdf()
         }   
