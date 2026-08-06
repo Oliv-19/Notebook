@@ -4,6 +4,7 @@ import { SaveButton } from "./SaveButton"
 import { ImportPDF } from "./ImportPDF"
 import { LogoutButton } from "./LogoutButton"
 import { ImportIMG } from "./ImportIMG"
+import { Background } from "./Background"
 
 export function Options(){
     const [openDropdown, setOpenDropdown] = useState(false)
@@ -35,8 +36,8 @@ export function Options(){
                         >
                         <SaveButton/>
                         <ImportPDF close={close}/>
-
                         <ImportIMG close={close}/>
+                        <Background/>
                         <LogoutButton/>
                     </div>
                 </div>

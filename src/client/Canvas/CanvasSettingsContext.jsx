@@ -7,10 +7,11 @@ const CanvasSettingsContext = createContext()
 const initStateSettings = {
     brushColor:'#000000',
     brushSize: 5,
+    backgroundStyle: null
 }
 
 export function CanvasSettingsProvider({children}){
-    const {canvas} = useCanvas()
+    const {canvas, hiddenCanvasRef} = useCanvas()
     const [stateSettings, dispatchSetting] = useReducer(canvasSettingsReducer, initStateSettings)
     
     const {
@@ -33,6 +34,7 @@ export function CanvasSettingsProvider({children}){
         setBrushColor: (color)=> {setSettings('SET_BRUSH_COLOR', color)},
         brushSize,
         setBrushSize: (size) => {setSettings('SET_BRUSH_SIZE', size)},
+        setBackgroundPattern: (style) => {setSettings('SET_BACKGROUND_STYLE', {style, canvas, hiddenCanvas: hiddenCanvasRef.current})},
     }
     return (
         <CanvasSettingsContext value={settings}>

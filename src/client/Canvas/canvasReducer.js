@@ -8,6 +8,42 @@ export function canvasSettingsReducer(state, action){
         case 'SET_BRUSH_SIZE':
             return {...state, brushSize: action.payload}
             break  
+        case 'SET_BACKGROUND_STYLE':
+            const {hiddenCanvas, canvas, style}= action.payload
+            const ctx = hiddenCanvas.getContext('2d')
+            if(canvas){
+                if(style == 'grid'){
+                    hiddenCanvas.width = 30
+                    hiddenCanvas.height = 30
+                    ctx.fillStyle = '#ffffff'
+                    ctx.fillRect( 0, 0, 30, 30 )
+                    ctx.strokeStyle = '#e0e0e0'
+                    ctx.lineWidth= 1
+                    ctx.beginPath()
+                    ctx.moveTo(30, 0)
+                    ctx.lineTo(0, 0)
+                    ctx.lineTo(0, 30)
+                    ctx.stroke()
+                } else if(style == 'line'){
+                    hiddenCanvas.width = 40
+                    hiddenCanvas.height = 40
+                    ctx.fillStyle = '#ffffff'
+                    ctx.fillRect( 0, 0, 40, 40 )
+                    ctx.strokeStyle = '#e0e0e0'
+                    ctx.lineWidth= 1
+                    ctx.beginPath()
+                    ctx.moveTo(0, 40)
+                    ctx.lineTo(40, 40)
+                    ctx.stroke()
+                }
+                canvas.backgroundColor = new fabric.Pattern({
+                    source: hiddenCanvas,
+                    repeat: 'repeat'
+                })
+                canvas.renderAll()
+            }
+            return {...state}
+            break  
         default:
             return state
             break
@@ -30,7 +66,7 @@ export function canvasInstanceReducer(state, action){
             }
             return {...state, dimensions:{w: width, h: height}}
             break
-            case 'UNDO': {
+        case 'UNDO': {
             const {canvas} = state
             if(canvas){
                 const objects = canvas.getObjects()
