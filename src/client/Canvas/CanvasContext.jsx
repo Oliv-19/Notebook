@@ -8,10 +8,8 @@ const CanvasContext = createContext()
 const initStateCanvas = {
     canvas: null,
     dimensions:{w: 1300, h:450},
-    currentTop: 450,
     undoStack: [],
     redoStack: [],
-    isSelection: false
 }
 const initStatePdf = {
     pdf: null
@@ -21,7 +19,7 @@ const initStatePdf = {
 export function CanvasProvider({children}){
     const [canvasState, dispatchCanvas] = useReducer(canvasInstanceReducer, initStateCanvas)
     const [pdfState, dispatchPdf] = useReducer(pdfReducer, initStatePdf)
-    const { canvas, isSelection} = canvasState
+    const { canvas} = canvasState
     const { pdf }= pdfState
     const [pdfUrl, setPdfUrl] = useState(null)
     const hiddenCanvasRef = useRef()
@@ -54,28 +52,6 @@ export function CanvasProvider({children}){
         }
     }, [pdf, canvas])
 
-    const events= {
-        undo: {shortcut: 'ctrl+z', callback: ()=>{setCanvas('UNDO', canvasState)} },
-        redo: {shortcut: 'ctrl+y', callback: ()=>{setCanvas('REDO', canvasState)} },
-        select: {shortcut: 'v', callback: ()=>{setCanvas('SELECT_MODE', true)} },
-        draw: {shortcut: 'b', callback: ()=>{setCanvas('SELECT_MODE', false)} },
-        delete: {shortcut: 'Delete', callback: ()=>{setCanvas('DELETE', canvasState)} },
-        paste: {shortcut: 'Paste', callback: (clipboardData)=>{
-            console.log('paste');
-            const items = clipboardData.items
-            if (!items) return
-            for(const item of items){
-                
-                if(item.type.indexOf('image') !== -1){
-                    const file = item.getAsFile()
-                    if(file){
-                        canvasInfo.uploadImg(file)
-                    } 
-                }
-
-            }
-        } },
-    }
     const canvasInfo = {
         setCanvasSize: (width, height)=> {setCanvas('SET_DIMENSIONS', {width, height})},
         canvas: canvas,
@@ -84,14 +60,11 @@ export function CanvasProvider({children}){
             const json = JSON.stringify(canvas.toJSON())
             setCanvas('SAVE_HISTORY', json)
         },
-        isSelectionMode: isSelection,
         uploadPdf: (url)=> {setPDF(url)},
-        uploadImg: (data)=> {setCanvas('UPLOAD_IMG', {data, hiddenCanvas: hiddenCanvasRef.current})},
         pdf,
         pdfUrl,
         hiddenCanvasRef,
         resetPdf: ()=> {dispatchPdf({type:'RESET_PDF', payload: null})},
-        events
     }
     return (
         <CanvasContext value={canvasInfo}>

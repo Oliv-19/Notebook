@@ -7,7 +7,7 @@ const CanvasSettingsContext = createContext()
 const initStateSettings = {
     brushColor:'#000000',
     brushSize: 5,
-    backgroundStyle: null
+    backgroundPattern: 'none'
 }
 
 export function CanvasSettingsProvider({children}){
@@ -16,7 +16,8 @@ export function CanvasSettingsProvider({children}){
     
     const {
         brushColor, 
-        brushSize } = stateSettings
+        brushSize,
+        backgroundPattern } = stateSettings
     
     const setSettings = (type, payload)=> {
         dispatchSetting({type, payload})
@@ -34,6 +35,7 @@ export function CanvasSettingsProvider({children}){
         setBrushColor: (color)=> {setSettings('SET_BRUSH_COLOR', color)},
         brushSize,
         setBrushSize: (size) => {setSettings('SET_BRUSH_SIZE', size)},
+        backgroundPattern,
         setBackgroundPattern: (style) => {setSettings('SET_BACKGROUND_STYLE', {style, canvas, hiddenCanvas: hiddenCanvasRef.current})},
     }
     return (

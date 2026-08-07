@@ -4,6 +4,7 @@ import * as fabric from 'fabric'
 import { useShortcut } from "../hooks/index"
 import { getCanvas } from "../services/canvas"
 import { getCurrNotebook } from "../services/notebooks"
+import { useCanvasActions } from "./CanvasActionsContext"
 
 function configureCanvas(canvas, canvasInfo){
     const { saveHistory } = canvasInfo
@@ -66,12 +67,8 @@ export function Canvas(){
     const fabricCanvasRef = useRef(null)
     const isExpanding = useRef(false)
     const canvasInfo = useCanvas()
-    const {
-        canvas, 
-        resetPdf,
-        events,
-        hiddenCanvasRef
-    } = canvasInfo
+    const {events} = useCanvasActions()
+    const {canvas, resetPdf, hiddenCanvasRef} = canvasInfo
     useShortcut(events)
 
     useEffect(()=> {

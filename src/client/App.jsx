@@ -9,6 +9,7 @@ import { AuthProvider, useAuth } from './AuthContext'
 import { Auth } from './Auth'
 import { Notebooks } from './Notebooks/Notebooks'
 import { NotebookProvider } from './Notebooks/NotebooksContext'
+import { CanvasActionsProvider } from './Canvas/CanvasActionsContext'
 
 function Content(){
   return (
@@ -41,16 +42,18 @@ function App() {
     <AuthProvider>
       <NotebookProvider>
         <CanvasProvider>
-          <CanvasSettingsProvider>
-            <div className="overflow-y-hidden w-screen">
-              <Routes>
-                  <Route path='/' element={<Root/>} />
-                  <Route path='/notebooks' element={<Notebooks/>} />
-                  <Route path='/notebooks/:name' element={<Content/>} />
-                  <Route path='/login' element={<Auth/>} />
-              </Routes>
-            </div>
-          </CanvasSettingsProvider>
+          <CanvasActionsProvider>
+            <CanvasSettingsProvider>
+              <div className="overflow-y-hidden w-screen">
+                <Routes>
+                    <Route path='/' element={<Root/>} />
+                    <Route path='/notebooks' element={<Notebooks/>} />
+                    <Route path='/notebooks/:name' element={<Content/>} />
+                    <Route path='/login' element={<Auth/>} />
+                </Routes>
+              </div>
+            </CanvasSettingsProvider>
+          </CanvasActionsProvider>
         </CanvasProvider>
       </NotebookProvider>
     </AuthProvider>

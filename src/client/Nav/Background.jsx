@@ -13,11 +13,15 @@ export function Background(){
             <div className="">
                 <label onChange={changeBackgroundStyle}>
                     Grid
-                    <input type="radio" name="grid" id="grid" value={'grid'}/>
+                    <input type="radio" name="style" id="grid" value={'grid'} />
                 </label>
                 <label onChange={changeBackgroundStyle}>
                     Line
-                    <input type="radio" name="line" id="line" value={'line'}/>
+                    <input type="radio" name="style" id="line" value={'line'}/>
+                </label>
+                <label onChange={changeBackgroundStyle}>
+                    None
+                    <input type="radio" name="style" id="none" value={'none'}/>
                 </label>
             </div>
         </>

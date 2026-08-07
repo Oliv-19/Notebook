@@ -1,9 +1,11 @@
 import { useState } from "react"
 import { useCanvas } from "../Canvas/CanvasContext"
 import { useEffect } from "react"
+import { useCanvasActions } from "../Canvas/CanvasActionsContext"
 
 export function Setting(){
-    const {canvas, isSelectionMode} = useCanvas()
+    const {canvas} = useCanvas()
+    const {isSelectionMode} = useCanvasActions()
     const [selectedObjs, setSelectedObjs] = useState(null)
     const [showSettings, setShowSettings] = useState(false)
     const [color, setColor] = useState('#000000')

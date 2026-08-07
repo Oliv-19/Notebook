@@ -19,6 +19,9 @@ export function CanvasNav(){
             <Button type={'delete'}/>
             <Button type={'undo'}/>
             <Button type={'redo'}/>
+            <Button type={'rect'}/>
+            <Button type={'circle'}/>
+            <Button type={'plane'}/>
             <ColorChanger />
             <BrushResize />
             <Options/>

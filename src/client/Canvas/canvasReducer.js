@@ -8,14 +8,19 @@ export function canvasSettingsReducer(state, action){
         case 'SET_BRUSH_SIZE':
             return {...state, brushSize: action.payload}
             break  
-        case 'SET_BACKGROUND_STYLE':
+        case 'SET_BACKGROUND_STYLE': {
             const {hiddenCanvas, canvas, style}= action.payload
             const ctx = hiddenCanvas.getContext('2d')
             if(canvas){
-                if(style == 'grid'){
+                if(style == 'none'){
+                    canvas.backgroundColor = state.backgroundColor
+                    canvas.renderAll()
+                    return {...state}
+                    break
+                }else if(style == 'grid'){
                     hiddenCanvas.width = 30
                     hiddenCanvas.height = 30
-                    ctx.fillStyle = '#ffffff'
+                    ctx.fillStyle = state.backgroundColor
                     ctx.fillRect( 0, 0, 30, 30 )
                     ctx.strokeStyle = '#e0e0e0'
                     ctx.lineWidth= 1
@@ -27,7 +32,7 @@ export function canvasSettingsReducer(state, action){
                 } else if(style == 'line'){
                     hiddenCanvas.width = 40
                     hiddenCanvas.height = 40
-                    ctx.fillStyle = '#ffffff'
+                    ctx.fillStyle = state.backgroundColor
                     ctx.fillRect( 0, 0, 40, 40 )
                     ctx.strokeStyle = '#e0e0e0'
                     ctx.lineWidth= 1
@@ -42,8 +47,9 @@ export function canvasSettingsReducer(state, action){
                 })
                 canvas.renderAll()
             }
-            return {...state}
+            return {...state, backgroundPattern:style }
             break  
+        }
         default:
             return state
             break
@@ -66,8 +72,27 @@ export function canvasInstanceReducer(state, action){
             }
             return {...state, dimensions:{w: width, h: height}}
             break
+        case 'SAVE_HISTORY':{
+            const {canvas, undoStack} = state
+            if(canvas == action.payload) return state
+            return {
+                ...state,
+                redoStack: [],
+                undoStack: [...state.undoStack, canvas]
+            }
+            break
+        }
+        
+        default:
+            return state
+            break
+    }
+}
+
+export function actionsReducer(state, action){
+    switch(action.type){
         case 'UNDO': {
-            const {canvas} = state
+            const {canvas} = action.payload
             if(canvas){
                 const objects = canvas.getObjects()
                 if(objects.length > 0){
@@ -85,7 +110,8 @@ export function canvasInstanceReducer(state, action){
 
         }
         case 'REDO':{
-            const {canvas, redoStack} = state
+            const {canvas} = action.payload
+            const { redoStack} = state
             if(canvas){
                 if(redoStack.length > 0){
                     const objToRestore = redoStack[redoStack.length-1]
@@ -99,30 +125,20 @@ export function canvasInstanceReducer(state, action){
             }
             break
         }
-        case 'SAVE_HISTORY':{
-            const {canvas, undoStack} = state
-            if(canvas == action.payload) return state
-            return {
-                ...state,
-                redoStack: [],
-                undoStack: [...state.undoStack, canvas]
-            }
-            break
-        }
         case 'SELECT_MODE': {
-            const {canvas} = state
+            const {canvas, isSelect} = action.payload
             if(canvas){
-                canvas.isDrawingMode = !action.payload
-                canvas.selection = action.payload
+                canvas.isDrawingMode = !isSelect
+                canvas.selection = isSelect
                 return {
                     ...state,
-                    isSelection : action.payload
+                    isSelection : isSelect
                 }
             }
             break
         }
         case 'DELETE':{
-            const {canvas} = state
+            const {canvas} = action.payload
             if(canvas){
                 const activeObjects = canvas.getActiveObjects()
                 if(activeObjects.length > 0){
@@ -137,8 +153,7 @@ export function canvasInstanceReducer(state, action){
             break
         }
         case 'UPLOAD_IMG':{
-            const {data, hiddenCanvas} = action.payload
-            const {canvas} = state
+            const {data, hiddenCanvas, canvas} = action.payload
             if(canvas && hiddenCanvas){
                 if(data.type?.includes('image')){
                     const reader = new FileReader()
@@ -192,7 +207,76 @@ export function canvasInstanceReducer(state, action){
                 return {...state}
             }
             break
-        }   
+        } 
+        case 'ADD_RECT':{
+            const {canvas} = action.payload
+            if(canvas){
+                const rect = new fabric.Rect({
+                    left:100,
+                    top: 100,
+                    width:150,
+                    height: 100,
+                    fill:'red'
+                })
+                canvas.add(rect)
+            }
+            return {...state}
+            break
+        } 
+        case 'ADD_CIRCLE':{
+            const {canvas} = action.payload
+            if(canvas){
+                const rect = new fabric.Circle({
+                    left:100,
+                    top: 100,
+                    radius:50,
+                    fill:'red'
+                })
+                canvas.add(rect)
+            }
+            return {...state}
+            break
+        }
+        case 'ADD_CARTESIAN_PLANE':{
+            const {canvas, hiddenCanvas} = action.payload
+            if(canvas && hiddenCanvas){
+                hiddenCanvas.width= 400
+                hiddenCanvas.height= 400
+                const ctx = hiddenCanvas.getContext('2d')
+                ctx.fillStyle = 'transparent'
+                ctx.fillRect(0, 0, hiddenCanvas.width, hiddenCanvas.height)
+                
+                const marginLeft = 50
+                const marginBottom = 40
+                const planeWidth = hiddenCanvas.width - marginLeft - 30
+                const planeHeight = hiddenCanvas.height - marginBottom - 30
+
+                ctx.strokeStyle = '#333333'
+                ctx.lineWidth = 2
+
+                ctx.beginPath()
+                ctx.moveTo(marginLeft, 30)
+                ctx.lineTo(marginLeft, 30 + planeHeight)
+                
+                ctx.lineTo(marginLeft + planeWidth, 30 + planeHeight)
+                ctx.stroke()
+
+                const graph = hiddenCanvas.toDataURL('image/png')
+                fabric.FabricImage.fromURL(graph)
+                .then(img => {
+                    img.scaleToWidth(400)
+                    img.set({
+                        left: 320,
+                        top: 450,
+                        selectable: true
+                    })
+                    canvas.add(img)
+                    canvas.renderAll()
+                }, {crossOrigin: 'anonymous'})        
+            }
+            return {...state}
+            break
+        }    
         default:
             return state
             break

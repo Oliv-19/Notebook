@@ -1,8 +1,8 @@
 import { useState } from "react"
-import { useCanvas } from "../Canvas/CanvasContext"
+import { useCanvasActions } from "../Canvas/CanvasActionsContext"
 
 export function Button({type}){
-    const {events} = useCanvas()
+    const {events} = useCanvasActions()
     const handleClick = ()=>{
         events[type].callback()
     }
