@@ -6,6 +6,7 @@ import * as fabric from 'fabric'
 const CanvasSettingsContext = createContext()
 const initStateSettings = {
     brushColor:'#000000',
+    backgroundTheme: {bg: '#ffffff', lines: '#e0e0e0'},
     brushSize: 5,
     backgroundPattern: 'none'
 }
@@ -17,7 +18,8 @@ export function CanvasSettingsProvider({children}){
     const {
         brushColor, 
         brushSize,
-        backgroundPattern } = stateSettings
+        backgroundPattern,
+        backgroundTheme } = stateSettings
     
     const setSettings = (type, payload)=> {
         dispatchSetting({type, payload})
@@ -36,7 +38,7 @@ export function CanvasSettingsProvider({children}){
         brushSize,
         setBrushSize: (size) => {setSettings('SET_BRUSH_SIZE', size)},
         backgroundPattern,
-        setBackgroundPattern: (style) => {setSettings('SET_BACKGROUND_STYLE', {style, canvas, hiddenCanvas: hiddenCanvasRef.current})},
+        setBackgroundPattern: (style, theme) => {setSettings('SET_BACKGROUND_STYLE', {style, theme, canvas, hiddenCanvas: hiddenCanvasRef.current})},
     }
     return (
         <CanvasSettingsContext value={settings}>

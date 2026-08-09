@@ -9,20 +9,21 @@ export function canvasSettingsReducer(state, action){
             return {...state, brushSize: action.payload}
             break  
         case 'SET_BACKGROUND_STYLE': {
-            const {hiddenCanvas, canvas, style}= action.payload
+            const {hiddenCanvas, canvas, style, theme}= action.payload
             const ctx = hiddenCanvas.getContext('2d')
+            const {bg, lines} = theme ? theme : state.backgroundTheme
             if(canvas){
                 if(style == 'none'){
-                    canvas.backgroundColor = state.backgroundColor
+                    canvas.backgroundColor = bg
                     canvas.renderAll()
-                    return {...state}
+                    return {...state, backgroundPattern: style}
                     break
                 }else if(style == 'grid'){
                     hiddenCanvas.width = 30
                     hiddenCanvas.height = 30
-                    ctx.fillStyle = state.backgroundColor
+                    ctx.fillStyle = bg
                     ctx.fillRect( 0, 0, 30, 30 )
-                    ctx.strokeStyle = '#e0e0e0'
+                    ctx.strokeStyle = lines
                     ctx.lineWidth= 1
                     ctx.beginPath()
                     ctx.moveTo(30, 0)
@@ -32,9 +33,9 @@ export function canvasSettingsReducer(state, action){
                 } else if(style == 'line'){
                     hiddenCanvas.width = 40
                     hiddenCanvas.height = 40
-                    ctx.fillStyle = state.backgroundColor
+                    ctx.fillStyle = bg
                     ctx.fillRect( 0, 0, 40, 40 )
-                    ctx.strokeStyle = '#e0e0e0'
+                    ctx.strokeStyle = lines
                     ctx.lineWidth= 1
                     ctx.beginPath()
                     ctx.moveTo(0, 40)
@@ -47,7 +48,7 @@ export function canvasSettingsReducer(state, action){
                 })
                 canvas.renderAll()
             }
-            return {...state, backgroundPattern:style }
+            return {...state, backgroundPattern:style, backgroundTheme: theme}
             break  
         }
         default:
