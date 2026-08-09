@@ -1,9 +1,10 @@
 import { useCanvasSettings } from "../Canvas/CanvasSettingsContext"
 
-function ThemeOption({theme}){
-    const {backgroundPattern, setBackgroundPattern} = useCanvasSettings()
+function ThemeOption({theme, brushColor}){
+    const {backgroundPattern, setBackgroundPattern, setBrushColor} = useCanvasSettings()
     const changeTheme = () => {
         setBackgroundPattern(backgroundPattern, theme) 
+        setBrushColor(brushColor)
     }
     return (
         <>
@@ -25,15 +26,17 @@ function ThemeOption({theme}){
 }
 
 function Themes(){
-    const theme = [
-        {bg:'#ffffff', lines:'#c5c9d1'},
-        {bg:'#121212', lines:'#2E2E2E'},
-        {bg:'#F5EBE0', lines:'#D5BDAF'},
+    const themes = [
+        [{bg:'#ffffff', lines:'#c5c9d1'}, '#000000'],
+        [{bg:'#353535', lines:'#676767'}, '#e8e8e8'],
+        [{bg:'#f5f2ee', lines:'#D5BDAF'}, '#000000'],
     ]
     return (
         <>
             <div className="flex flex-wrap gap-2 w-full h-fit justify-center">
-                {theme.map((t) => <ThemeOption key={t.bg+t.lines} theme={t} />)}
+                {themes.map(([theme, brush]) => 
+                    <ThemeOption key={theme.bg+theme.lines} theme={theme} brushColor={brush}/>
+                )}
             </div>
             
         </>

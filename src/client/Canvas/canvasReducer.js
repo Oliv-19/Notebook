@@ -22,7 +22,7 @@ export function canvasSettingsReducer(state, action){
         case 'SET_BACKGROUND_STYLE': {
             const {hiddenCanvas, canvas, style, theme}= action.payload
             const ctx = hiddenCanvas.getContext('2d')
-            const {bg, lines} = theme ? theme : state.backgroundTheme
+            const {bg, lines} = theme || state.backgroundTheme
             if(canvas){
                 if(style == 'none'){
                     canvas.backgroundColor = bg
@@ -59,7 +59,7 @@ export function canvasSettingsReducer(state, action){
                 })
                 canvas.requestRenderAll()
             }
-            return {...state, backgroundPattern:style, backgroundTheme: theme}
+            return {...state, backgroundPattern:style || state.backgroundPattern, backgroundTheme: theme || state.backgroundTheme}
             break  
         }
         default:

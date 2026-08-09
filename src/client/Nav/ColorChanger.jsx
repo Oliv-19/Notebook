@@ -7,7 +7,7 @@ export function ColorChanger(){
     }
     return (
         <>
-            <input type="color" onChange={changeColor} defaultValue={brushColor}/>
+            <input type="color" onChange={changeColor} value={brushColor}/>
         </>
     )
 }
