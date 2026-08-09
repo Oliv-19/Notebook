@@ -10,7 +10,7 @@ import { Options } from "./Options";
 export function CanvasNav(){
     return (
         <>
-        <nav className="bg-(--green) p-3 flex justify-between w-full h-[8%]">
+        <nav className="bg-(--dark-green) p-3 flex justify-between w-full h-[8%]">
             <Link to={'/notebooks'} className="text-white font-medium text-2xl">
                 Notebook
             </Link>

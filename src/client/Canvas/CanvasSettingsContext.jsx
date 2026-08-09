@@ -7,7 +7,7 @@ const CanvasSettingsContext = createContext()
 const initStateSettings = {
     brushColor:'#000000',
     backgroundTheme: {bg: '#ffffff', lines: '#e0e0e0'},
-    brushSize: 5,
+    brushSize: 2,
     backgroundPattern: 'none'
 }
 

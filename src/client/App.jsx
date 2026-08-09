@@ -14,15 +14,21 @@ import { CanvasActionsProvider } from './Canvas/CanvasActionsContext'
 function Content(){
   return (
     <>
-    <div className="flex justify-center items-center w-full">
-      <PdfViewer/>
-      <div className="h-screen w-fit flex flex-col">
-        <CanvasNav/>
-        <div className="relative h-[92%]">
-          <Canvas/>
-        </div>
-      </div>
-    </div>
+      <CanvasProvider>
+        <CanvasSettingsProvider>
+          <CanvasActionsProvider>
+            <div className="flex justify-center items-center w-full">
+              <PdfViewer/>
+              <div className="h-screen w-fit flex flex-col">
+                <CanvasNav/>
+                <div className="relative h-[92%]">
+                  <Canvas/>
+                </div>
+              </div>
+            </div>
+          </CanvasActionsProvider>
+        </CanvasSettingsProvider>
+      </CanvasProvider>
     </>
   )
 }
@@ -41,20 +47,14 @@ function App() {
     <>
     <AuthProvider>
       <NotebookProvider>
-        <CanvasProvider>
-          <CanvasSettingsProvider>
-            <CanvasActionsProvider>
-              <div className="overflow-y-hidden w-screen">
-                <Routes>
-                    <Route path='/' element={<Root/>} />
-                    <Route path='/notebooks' element={<Notebooks/>} />
-                    <Route path='/notebooks/:name' element={<Content/>} />
-                    <Route path='/login' element={<Auth/>} />
-                </Routes>
-              </div>
-            </CanvasActionsProvider>
-          </CanvasSettingsProvider>
-        </CanvasProvider>
+        <div className="overflow-y-hidden w-screen">
+          <Routes>
+              <Route path='/' element={<Root/>} />
+              <Route path='/notebooks' element={<Notebooks/>} />
+              <Route path='/notebooks/:name' element={<Content/>} />
+              <Route path='/login' element={<Auth/>} />
+          </Routes>
+        </div>
       </NotebookProvider>
     </AuthProvider>
     </>

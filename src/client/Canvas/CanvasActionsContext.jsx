@@ -25,7 +25,6 @@ export function CanvasActionsProvider({children}){
         undo: {shortcut: 'ctrl+z', callback: ()=>{setAction('UNDO', {canvas})} },
         redo: {shortcut: 'ctrl+y', callback: ()=>{setAction('REDO', {canvas})} },
         select: {shortcut: 'v', callback: ()=>{setAction('SELECT_MODE', {isSelect: true, canvas})} },
-        // draw: {shortcut: 'b', callback: ()=>{setAction('SELECT_MODE', {isSelect: false, canvas})} },
         draw: {shortcut: 'b', callback: ()=>{setAction('DRAWING_MODE', {canvas, brushColor, brushSize})} },
         erase: {shortcut: '', callback: ()=>{setAction('ERASER_MODE', {canvas, brushSize})} },
         delete: {shortcut: 'Delete', callback: ()=>{setAction('DELETE', {canvas})} },

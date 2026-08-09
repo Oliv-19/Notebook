@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useCanvasActions } from "../Canvas/CanvasActionsContext"
+import { Icon } from "../Icon"
 
 export function Button({type}){
     const {events} = useCanvasActions()
@@ -9,9 +10,9 @@ export function Button({type}){
     
     return (
         <>
-        <button 
+        <button className="cursor-pointer"
             onClick={handleClick}>
-            {type}
+            <Icon iconName={type} style={'w-6 fill-white border-white'} />
         </button>
         </>
     )
