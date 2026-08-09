@@ -16,6 +16,7 @@ export function CanvasNav(){
             </Link>
             <Button type={'draw'}/>
             <Button type={'select'}/>
+            <Button type={'erase'}/>
             <Button type={'delete'}/>
             <Button type={'undo'}/>
             <Button type={'redo'}/>

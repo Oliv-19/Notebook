@@ -9,7 +9,7 @@ const getViewportCenter = (canvas) => {
     const centerY = screenCenterYInWindow - canvasBoundingRect.top
     const centerX = canvas.width/2
     return {centerX, centerY}
-};
+}
 
 export function canvasSettingsReducer(state, action){
     switch(action.type){
@@ -27,7 +27,7 @@ export function canvasSettingsReducer(state, action){
                 if(style == 'none'){
                     canvas.backgroundColor = bg
                     canvas.requestRenderAll()
-                    return {...state, backgroundPattern: style}
+                    return {...state, backgroundPattern:style || state.backgroundPattern, backgroundTheme: theme || state.backgroundTheme}
                     break
                 }else if(style == 'grid'){
                     hiddenCanvas.width = 30
@@ -149,6 +149,53 @@ export function actionsReducer(state, action){
             }
             break
         }
+        case 'ERASER_MODE': {
+            const {canvas, brushSize} = action.payload
+            if(canvas){
+
+                canvas.isDrawingMode = true
+                const brush = new fabric.PencilBrush(canvas)
+                brush.width = brushSize
+                canvas.freeDrawingCursor = 'default'
+                // brush.color = '#ffffff'
+                const eraserListener = (e) => {
+                    const eraserPath = e.path
+                    const objects = canvas.getObjects()
+                    objects.forEach((obj) => {
+                    if (obj !== eraserPath && obj.intersectsWithObject(eraserPath)) {
+                        canvas.remove(obj)
+                    }
+                    })
+                    canvas.remove(eraserPath)
+                    canvas.renderAll()
+                }
+                canvas.freeDrawingBrush = brush
+                canvas.off('path:created', eraserListener)
+                canvas.on('path:created', eraserListener)
+                return {
+                    ...state
+                }
+            }
+            break
+        }
+        case 'DRAWING_MODE': {
+            const {canvas, brushSize, brushColor} = action.payload
+            if(canvas){
+                    canvas.isDrawingMode = true
+                    canvas.freeDrawingCursor = 'crosshair'
+                    const brush = new fabric.PencilBrush(canvas)
+                    brush.width = brushSize
+                    brush.color = brushColor
+                    canvas.off('path:created');
+
+                    canvas.freeDrawingBrush = brush
+                    canvas.selection = false
+                return {
+                    ...state
+                }
+            }
+            break
+        }
         case 'DELETE':{
             const {canvas} = action.payload
             if(canvas){
@@ -199,6 +246,7 @@ export function actionsReducer(state, action){
                                     scaleY: 0.5
                                 })
                                 canvas.add(img)
+                                canvas.setActiveObject(img)
                                 canvas.requestRenderAll()
                             }, {crossOrigin: 'anonymous'})        
                         }   
@@ -213,6 +261,7 @@ export function actionsReducer(state, action){
                             scaleY: 0.5
                         })
                         canvas.add(img)
+                        canvas.setActiveObject(img)
                         canvas.requestRenderAll()
                       })              
 
@@ -233,6 +282,7 @@ export function actionsReducer(state, action){
                     fill:'red'
                 })
                 canvas.add(rect)
+                canvas.setActiveObject(rect)
             }
             return {...state}
             break
@@ -241,13 +291,14 @@ export function actionsReducer(state, action){
             const {canvas} = action.payload
             if(canvas){
                 const {centerX, centerY} = getViewportCenter(canvas)
-                const rect = new fabric.Circle({
+                const circle = new fabric.Circle({
                     left:centerX,
                     top: centerY,
                     radius:50,
                     fill:'red'
                 })
-                canvas.add(rect)
+                canvas.add(circle)
+                canvas.setActiveObject(circle)
             }
             return {...state}
             break
@@ -287,6 +338,7 @@ export function actionsReducer(state, action){
                         selectable: true
                     })
                     canvas.add(img)
+                    canvas.setActiveObject(img)
                     canvas.requestRenderAll()
                 }, {crossOrigin: 'anonymous'})        
             }

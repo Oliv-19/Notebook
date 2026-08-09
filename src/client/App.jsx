@@ -42,8 +42,8 @@ function App() {
     <AuthProvider>
       <NotebookProvider>
         <CanvasProvider>
-          <CanvasActionsProvider>
-            <CanvasSettingsProvider>
+          <CanvasSettingsProvider>
+            <CanvasActionsProvider>
               <div className="overflow-y-hidden w-screen">
                 <Routes>
                     <Route path='/' element={<Root/>} />
@@ -52,8 +52,8 @@ function App() {
                     <Route path='/login' element={<Auth/>} />
                 </Routes>
               </div>
-            </CanvasSettingsProvider>
-          </CanvasActionsProvider>
+            </CanvasActionsProvider>
+          </CanvasSettingsProvider>
         </CanvasProvider>
       </NotebookProvider>
     </AuthProvider>
