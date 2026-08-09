@@ -1,5 +1,16 @@
 import * as fabric from 'fabric'
 
+const getViewportCenter = (canvas) => {
+    if (!canvas) return
+    const canvasBoundingRect = canvas.lowerCanvasEl.getBoundingClientRect()
+  
+    const windowHeight = window.innerHeight
+    const screenCenterYInWindow = windowHeight / 2
+    const centerY = screenCenterYInWindow - canvasBoundingRect.top
+    const centerX = canvas.width/2
+    return {centerX, centerY}
+};
+
 export function canvasSettingsReducer(state, action){
     switch(action.type){
         case 'SET_BRUSH_COLOR':
@@ -15,7 +26,7 @@ export function canvasSettingsReducer(state, action){
             if(canvas){
                 if(style == 'none'){
                     canvas.backgroundColor = bg
-                    canvas.renderAll()
+                    canvas.requestRenderAll()
                     return {...state, backgroundPattern: style}
                     break
                 }else if(style == 'grid'){
@@ -46,7 +57,7 @@ export function canvasSettingsReducer(state, action){
                     source: hiddenCanvas,
                     repeat: 'repeat'
                 })
-                canvas.renderAll()
+                canvas.requestRenderAll()
             }
             return {...state, backgroundPattern:style, backgroundTheme: theme}
             break  
@@ -99,7 +110,7 @@ export function actionsReducer(state, action){
                 if(objects.length > 0){
                     const lastObj = objects[objects.length-1]
                     canvas.remove(lastObj)
-                    canvas.renderAll()
+                    canvas.requestRenderAll()
                     return {
                         ...state,
                         undoStack: state.undoStack.slice(0, -1),
@@ -117,7 +128,7 @@ export function actionsReducer(state, action){
                 if(redoStack.length > 0){
                     const objToRestore = redoStack[redoStack.length-1]
                     canvas.add(objToRestore)
-                    canvas.renderAll()
+                    canvas.requestRenderAll()
                     return {
                         ...state,
                         redoStack: redoStack.slice(0, -1),
@@ -147,7 +158,7 @@ export function actionsReducer(state, action){
                     activeObjects.forEach(obj => {
                         canvas.remove(obj)
                     })
-                    canvas.renderAll()
+                    canvas.requestRenderAll()
                 }
                 return {...state}
             }
@@ -178,16 +189,17 @@ export function actionsReducer(state, action){
                             ctx.drawImage(img, 0 , 0, width, height)
                             const base64 = hiddenCanvas.toDataURL('image/jpeg', 0.1)
                             
+                            const {centerX, centerY} = getViewportCenter(canvas)
                             fabric.FabricImage.fromURL(base64)
                             .then(img => {
                                 img.set({
-                                    left: 320,
-                                    top: 450,
+                                    left: centerX,
+                                    top: centerY,
                                     scaleX: 0.5,
                                     scaleY: 0.5
                                 })
                                 canvas.add(img)
-                                canvas.renderAll()
+                                canvas.requestRenderAll()
                             }, {crossOrigin: 'anonymous'})        
                         }   
                     }
@@ -201,7 +213,7 @@ export function actionsReducer(state, action){
                             scaleY: 0.5
                         })
                         canvas.add(img)
-                        canvas.renderAll()
+                        canvas.requestRenderAll()
                       })              
 
                 }
@@ -212,9 +224,10 @@ export function actionsReducer(state, action){
         case 'ADD_RECT':{
             const {canvas} = action.payload
             if(canvas){
+                const {centerX, centerY} = getViewportCenter(canvas)
                 const rect = new fabric.Rect({
-                    left:100,
-                    top: 100,
+                    left:centerX,
+                    top: centerY,
                     width:150,
                     height: 100,
                     fill:'red'
@@ -227,9 +240,10 @@ export function actionsReducer(state, action){
         case 'ADD_CIRCLE':{
             const {canvas} = action.payload
             if(canvas){
+                const {centerX, centerY} = getViewportCenter(canvas)
                 const rect = new fabric.Circle({
-                    left:100,
-                    top: 100,
+                    left:centerX,
+                    top: centerY,
                     radius:50,
                     fill:'red'
                 })
@@ -263,16 +277,17 @@ export function actionsReducer(state, action){
                 ctx.stroke()
 
                 const graph = hiddenCanvas.toDataURL('image/png')
+                const {centerX, centerY} = getViewportCenter(canvas)
                 fabric.FabricImage.fromURL(graph)
                 .then(img => {
                     img.scaleToWidth(400)
                     img.set({
-                        left: 320,
-                        top: 450,
+                        left: centerX,
+                        top: centerY,
                         selectable: true
                     })
                     canvas.add(img)
-                    canvas.renderAll()
+                    canvas.requestRenderAll()
                 }, {crossOrigin: 'anonymous'})        
             }
             return {...state}
