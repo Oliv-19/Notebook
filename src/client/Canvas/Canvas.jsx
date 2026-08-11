@@ -8,11 +8,11 @@ import { useCanvasActions } from "./CanvasActionsContext"
 import { useCanvasSettings } from "./CanvasSettingsContext"
 
 function configureCanvas(canvas, canvasInfo){
-    const { saveHistory } = canvasInfo
+    const { saveHistory} = canvasInfo
     canvas.freeDrawingBrush = new fabric.PencilBrush(canvas)
     canvas.freeDrawingBrush.decimate = 8
     canvas.freeDrawingBrush.color = '#000000'
-    canvas.freeDrawingBrush.width = 5
+    canvas.freeDrawingBrush.width = 2
     canvas.freeDrawingBrush.strokeLineCap = 'round'
     canvas.freeDrawingBrush.strokeLineJoin = 'round'
     canvas.on('path:created', (e)=> {
@@ -23,11 +23,15 @@ function configureCanvas(canvas, canvasInfo){
         })
         saveHistory(canvas)
     })
+    canvas.on('object:modified', (e) => {
+        saveHistory(canvas)
+    })
+    
 }
 
 async function initCanvas(canvasRef, fabricCanvasRef, canvasInfo, settings){
     const notebook =  getCurrNotebook()
-    const { setCanvas } = canvasInfo
+    const { setCanvas, saveHistory } = canvasInfo
     const { setBackgroundPattern } = settings
     const dpr = window.devicePixelRatio
     const fabricCanvas = new fabric.Canvas(canvasRef.current, {
@@ -48,7 +52,10 @@ async function initCanvas(canvasRef, fabricCanvasRef, canvasInfo, settings){
             pdf && uploadPdf(pdf)
             if(savedCanvas) {
                 fabricCanvas.loadFromJSON(savedCanvas.canvas || savedCanvas)
-                    .then(canvas => canvas.requestRenderAll()
+                    .then(canvas =>{
+                        canvas.requestRenderAll()
+                        saveHistory(canvas)
+                    } 
                 )
                 if(savedCanvas.metadata){
                     setBackgroundPattern(

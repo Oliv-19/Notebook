@@ -13,7 +13,7 @@ const actionsInitState= {
     redoStack: [],
 }
 export function CanvasActionsProvider({children}){
-    const {canvas, hiddenCanvasRef, undo, redo} = useCanvas()
+    const {canvas, hiddenCanvasRef, undo, redo, saveHistory} = useCanvas()
     const {brushColor, brushSize} = useCanvasSettings()
     const [actionsState, dispatchAction] = useReducer(actionsReducer, actionsInitState)
     const { isSelection } = actionsState
@@ -25,8 +25,8 @@ export function CanvasActionsProvider({children}){
         undo: {shortcut: 'ctrl+z', callback: ()=>{undo()} },
         redo: {shortcut: 'ctrl+y', callback: ()=>{redo()} },
         select: {shortcut: 'v', callback: ()=>{setAction('SELECT_MODE', {isSelect: true, canvas})} },
-        draw: {shortcut: 'b', callback: ()=>{setAction('DRAWING_MODE', {canvas, brushColor, brushSize})} },
-        erase: {shortcut: 'e', callback: ()=>{setAction('ERASER_MODE', {canvas})} },
+        draw: {shortcut: 'b', callback: ()=>{setAction('DRAWING_MODE', {canvas, brushColor, brushSize, saveHistory})} },
+        erase: {shortcut: 'e', callback: ()=>{setAction('ERASER_MODE', {canvas, saveHistory})} },
         delete: {shortcut: 'Delete', callback: ()=>{setAction('DELETE', {canvas})} },
         paste: {shortcut: 'Paste', callback: (clipboardData)=>{
             const items = clipboardData.items
@@ -43,9 +43,9 @@ export function CanvasActionsProvider({children}){
                 
             }
         } },
-        rect: {shortcut: undefined, callback: ()=>{setAction('ADD_RECT', {canvas, brushColor})} },
-        circle: {shortcut: undefined, callback: ()=>{setAction('ADD_CIRCLE', {canvas, brushColor})} },
-        plane: {shortcut: undefined, callback: ()=>{setAction('ADD_CARTESIAN_PLANE', {canvas, hiddenCanvas: hiddenCanvasRef.current})} },
+        rect: {shortcut: undefined, callback: ()=>{setAction('ADD_RECT', {canvas, brushColor, saveHistory})} },
+        circle: {shortcut: undefined, callback: ()=>{setAction('ADD_CIRCLE', {canvas, brushColor, saveHistory})} },
+        plane: {shortcut: undefined, callback: ()=>{setAction('ADD_CARTESIAN_PLANE', {canvas, hiddenCanvas: hiddenCanvasRef.current, saveHistory})} },
     }
     const actionsInfo = {
         isSelectionMode: isSelection,

@@ -4,9 +4,11 @@ import { useCanvas } from "../Canvas/CanvasContext"
 import { saveCanvas } from "../services/canvas"
 import { getCurrNotebook } from "../services/notebooks"
 import { savePdf } from "../services/pdfs"
+import { useCanvasSettings } from "../Canvas/CanvasSettingsContext"
 
 export function SaveButton(){
     const {canvas, pdfUrl} = useCanvas()
+    const {backgroundTheme, backgroundPattern} = useCanvasSettings()
     const { user } = useAuth()
     const navigate = useNavigate()
     
@@ -16,8 +18,8 @@ export function SaveButton(){
         const finalData = {
             canvas: canvas.toJSON(),
             metadata : {
-                backgroundType: canvas.customBackgroundType,
-                backgroundTheme: canvas.customBackgroundTheme
+                backgroundType: backgroundPattern,
+                backgroundTheme: backgroundTheme
             }
         }
         await saveCanvas(finalData, notebook.id)

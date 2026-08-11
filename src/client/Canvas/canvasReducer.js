@@ -57,8 +57,6 @@ export function canvasSettingsReducer(state, action){
                     source: hiddenCanvas,
                     repeat: 'repeat'
                 })
-                canvas.customBackgroundType = style || state.backgroundPattern
-                canvas.customBackgroundTheme = theme || state.backgroundTheme
                 canvas.requestRenderAll()
             }
             return {...state, backgroundPattern:style || state.backgroundPattern, backgroundTheme: theme || state.backgroundTheme}
@@ -92,37 +90,42 @@ export function canvasInstanceReducer(state, action){
             return {
                 ...state,
                 redoStack: [],
-                undoStack: [...state.undoStack, canvas]
+                undoStack: [...state.undoStack, action.payload]
             }
             break
         }
         case 'UNDO': {
             const {canvas, undoStack, redoStack} = state
             if(canvas){
-                const objects = canvas.getObjects()
-                if(objects.length <= 0) return state
-                const lastObj = objects[objects.length-1]
-                canvas.remove(lastObj)
-                canvas.requestRenderAll()
+                if(undoStack.length <= 1) return state
+                const currentState = undoStack[undoStack.length-1]
+                const lastState = undoStack[undoStack.length-2]
+                canvas.loadFromJSON(lastState)
+                .then((loadedCanvas)=> {
+                    loadedCanvas.requestRenderAll()
+                    }) 
                 return {
                     ...state,
                     undoStack: undoStack.slice(0, -1),
-                    redoStack: [...redoStack, lastObj]
+                    redoStack: [...redoStack, currentState]
                 }
             }
             break
         
         }
         case 'REDO':{
-            const {canvas, redoStack} = state
+            const {canvas, redoStack, undoStack} = state
             if(canvas){
                 if(redoStack.length <= 0) return state
-                const objToRestore = redoStack[redoStack.length-1]
-                canvas.add(objToRestore)
-                canvas.requestRenderAll()
+                const nextState = redoStack[redoStack.length-1]
+                canvas.loadFromJSON(nextState)
+                .then((loadedCanvas)=> {
+                    loadedCanvas.requestRenderAll()
+                    }) 
                 return {
                     ...state,
                     redoStack: redoStack.slice(0, -1),
+                    undoStack:  [...undoStack, nextState]
                 }
                 
             }
@@ -149,7 +152,7 @@ export function actionsReducer(state, action){
             break
         }
         case 'ERASER_MODE': {
-            const {canvas} = action.payload
+            const {canvas, saveHistory} = action.payload
             if(canvas){
 
                 canvas.isDrawingMode = true
@@ -167,6 +170,7 @@ export function actionsReducer(state, action){
                     })
                     canvas.remove(eraserPath)
                     canvas.requestRenderAll()
+                    saveHistory(canvas)
                 }
                 canvas.freeDrawingBrush = brush
                 canvas.off('path:created', eraserListener)
@@ -178,15 +182,22 @@ export function actionsReducer(state, action){
             break
         }
         case 'DRAWING_MODE': {
-            const {canvas, brushSize, brushColor} = action.payload
+            const {canvas, brushSize, brushColor, saveHistory} = action.payload
             if(canvas){
                     canvas.isDrawingMode = true
                     canvas.freeDrawingCursor = 'crosshair'
                     const brush = new fabric.PencilBrush(canvas)
                     brush.width = brushSize
                     brush.color = brushColor
-                    canvas.off('path:created');
-
+                    canvas.off('path:created')
+                    canvas.on('path:created', (e)=> {
+                        const path = e.path
+                        path.set({
+                            selectable: true,
+                            evented: true
+                        })
+                        saveHistory(canvas)
+                    })
                     canvas.freeDrawingBrush = brush
                     canvas.selection = false
                 return {
@@ -270,7 +281,7 @@ export function actionsReducer(state, action){
             break
         } 
         case 'ADD_RECT':{
-            const {canvas, brushColor} = action.payload
+            const {canvas, brushColor, saveHistory} = action.payload
             if(canvas){
                 const {centerX, centerY} = getViewportCenter(canvas)
                 const rect = new fabric.Rect({
@@ -282,12 +293,14 @@ export function actionsReducer(state, action){
                 })
                 canvas.add(rect)
                 canvas.setActiveObject(rect)
+                saveHistory(canvas)
+                
             }
             return {...state}
             break
         } 
         case 'ADD_CIRCLE':{
-            const {canvas, brushColor} = action.payload
+            const {canvas, brushColor, saveHistory} = action.payload
             if(canvas){
                 const {centerX, centerY} = getViewportCenter(canvas)
                 const circle = new fabric.Circle({
@@ -298,12 +311,13 @@ export function actionsReducer(state, action){
                 })
                 canvas.add(circle)
                 canvas.setActiveObject(circle)
+                saveHistory(canvas)
             }
             return {...state}
             break
         }
         case 'ADD_CARTESIAN_PLANE':{
-            const {canvas, hiddenCanvas} = action.payload
+            const {canvas, hiddenCanvas, saveHistory} = action.payload
             if(canvas && hiddenCanvas){
                 hiddenCanvas.width= 400
                 hiddenCanvas.height= 400
@@ -339,6 +353,7 @@ export function actionsReducer(state, action){
                     canvas.add(img)
                     canvas.setActiveObject(img)
                     canvas.requestRenderAll()
+                    saveHistory(canvas)
                 }, {crossOrigin: 'anonymous'})        
             }
             return {...state}

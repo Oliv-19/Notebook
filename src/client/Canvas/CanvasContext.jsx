@@ -23,7 +23,6 @@ export function CanvasProvider({children}){
     const { pdf }= pdfState
     const [pdfUrl, setPdfUrl] = useState(null)
     const hiddenCanvasRef = useRef()
-
     const setCanvas = (type, payload)=> {
         dispatchCanvas({type, payload})
     }
