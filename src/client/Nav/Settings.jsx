@@ -40,7 +40,7 @@ export function Setting(){
                 obj.set({stroke: value})
                 
             })
-            canvas.renderAll()
+            canvas.requestRenderAll()
         }
     }
     return (

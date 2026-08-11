@@ -149,12 +149,12 @@ export function actionsReducer(state, action){
             break
         }
         case 'ERASER_MODE': {
-            const {canvas, brushSize} = action.payload
+            const {canvas} = action.payload
             if(canvas){
 
                 canvas.isDrawingMode = true
                 const brush = new fabric.PencilBrush(canvas)
-                brush.width = brushSize
+                brush.width = 5
                 canvas.freeDrawingCursor = 'default'
                 // brush.color = '#ffffff'
                 const eraserListener = (e) => {
@@ -166,7 +166,7 @@ export function actionsReducer(state, action){
                     }
                     })
                     canvas.remove(eraserPath)
-                    canvas.renderAll()
+                    canvas.requestRenderAll()
                 }
                 canvas.freeDrawingBrush = brush
                 canvas.off('path:created', eraserListener)
@@ -270,7 +270,7 @@ export function actionsReducer(state, action){
             break
         } 
         case 'ADD_RECT':{
-            const {canvas} = action.payload
+            const {canvas, brushColor} = action.payload
             if(canvas){
                 const {centerX, centerY} = getViewportCenter(canvas)
                 const rect = new fabric.Rect({
@@ -278,7 +278,7 @@ export function actionsReducer(state, action){
                     top: centerY,
                     width:150,
                     height: 100,
-                    fill:'red'
+                    fill: brushColor
                 })
                 canvas.add(rect)
                 canvas.setActiveObject(rect)
@@ -287,14 +287,14 @@ export function actionsReducer(state, action){
             break
         } 
         case 'ADD_CIRCLE':{
-            const {canvas} = action.payload
+            const {canvas, brushColor} = action.payload
             if(canvas){
                 const {centerX, centerY} = getViewportCenter(canvas)
                 const circle = new fabric.Circle({
                     left:centerX,
                     top: centerY,
                     radius:50,
-                    fill:'red'
+                    fill: brushColor
                 })
                 canvas.add(circle)
                 canvas.setActiveObject(circle)

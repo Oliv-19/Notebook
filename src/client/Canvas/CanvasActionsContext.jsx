@@ -26,7 +26,7 @@ export function CanvasActionsProvider({children}){
         redo: {shortcut: 'ctrl+y', callback: ()=>{redo()} },
         select: {shortcut: 'v', callback: ()=>{setAction('SELECT_MODE', {isSelect: true, canvas})} },
         draw: {shortcut: 'b', callback: ()=>{setAction('DRAWING_MODE', {canvas, brushColor, brushSize})} },
-        erase: {shortcut: '', callback: ()=>{setAction('ERASER_MODE', {canvas, brushSize})} },
+        erase: {shortcut: 'e', callback: ()=>{setAction('ERASER_MODE', {canvas})} },
         delete: {shortcut: 'Delete', callback: ()=>{setAction('DELETE', {canvas})} },
         paste: {shortcut: 'Paste', callback: (clipboardData)=>{
             const items = clipboardData.items
@@ -43,9 +43,9 @@ export function CanvasActionsProvider({children}){
                 
             }
         } },
-        rect: {shortcut: ' ', callback: ()=>{setAction('ADD_RECT', {canvas})} },
-        circle: {shortcut: ' ', callback: ()=>{setAction('ADD_CIRCLE', {canvas})} },
-        plane: {shortcut: ' ', callback: ()=>{setAction('ADD_CARTESIAN_PLANE', {canvas, hiddenCanvas: hiddenCanvasRef.current})} },
+        rect: {shortcut: undefined, callback: ()=>{setAction('ADD_RECT', {canvas, brushColor})} },
+        circle: {shortcut: undefined, callback: ()=>{setAction('ADD_CIRCLE', {canvas, brushColor})} },
+        plane: {shortcut: undefined, callback: ()=>{setAction('ADD_CARTESIAN_PLANE', {canvas, hiddenCanvas: hiddenCanvasRef.current})} },
     }
     const actionsInfo = {
         isSelectionMode: isSelection,

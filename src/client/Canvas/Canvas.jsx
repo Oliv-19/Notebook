@@ -51,7 +51,10 @@ async function initCanvas(canvasRef, fabricCanvasRef, canvasInfo, settings){
                     .then(canvas => canvas.requestRenderAll()
                 )
                 if(savedCanvas.metadata){
-                    setBackgroundPattern(savedCanvas.metadata.backgroundType)
+                    setBackgroundPattern(
+                        savedCanvas.metadata.backgroundType, 
+                        savedCanvas.metadata.backgroundTheme
+                    )
                 }
             }
             
@@ -104,7 +107,7 @@ export function Canvas(){
                 width: canvas.getWidth(),
                 height: newHeight
             })
-            canvas.renderAll()
+            canvas.requestRenderAll()
             setTimeout(() => { isExpanding.current = false; }, 500)
         }
     }

@@ -38,6 +38,7 @@ export function CanvasSettingsProvider({children}){
         brushSize,
         setBrushSize: (size) => {setSettings('SET_BRUSH_SIZE', size)},
         backgroundPattern,
+        backgroundTheme,
         setBackgroundPattern: (style, theme) => {setSettings('SET_BACKGROUND_STYLE', {style, theme, canvas, hiddenCanvas: hiddenCanvasRef.current})},
     }
     return (

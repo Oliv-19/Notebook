@@ -1,7 +1,8 @@
+import { useState } from "react"
 import { useCanvasSettings } from "../Canvas/CanvasSettingsContext"
 
 function ThemeOption({theme, brushColor}){
-    const {backgroundPattern, setBackgroundPattern, setBrushColor} = useCanvasSettings()
+    const {backgroundPattern, backgroundTheme, setBackgroundPattern, setBrushColor} = useCanvasSettings()
     const changeTheme = () => {
         setBackgroundPattern(backgroundPattern, theme) 
         setBrushColor(brushColor)
@@ -9,7 +10,8 @@ function ThemeOption({theme, brushColor}){
     return (
         <>
             <button onClick={changeTheme} style={{'--bg': theme.bg, '--lines': theme.lines}}
-                className={`w-10 h-10 bg-(--bg) rounded cursor-pointer`}>
+                className={`w-10 h-10 bg-(--bg) rounded cursor-pointer 
+                    ${backgroundTheme.bg == theme.bg ? 'outline-2 outline-(--dark-green)' : 'outline-none'}`}>
                 { backgroundPattern == 'line' ?
                     <hr className={`text-(--lines)`}/> 
                     : (backgroundPattern == 'grid' && 

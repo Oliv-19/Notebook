@@ -47,7 +47,7 @@ export function CanvasProvider({children}){
                 const width = window.screen.width / 2
                 const height = canvas.height
                 setCanvas('SET_DIMENSIONS', {width:width+50, height:height})
-                canvas.renderAll()
+                canvas.requestRenderAll()
             }
         }
     }, [pdf, canvas])

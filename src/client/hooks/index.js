@@ -1,9 +1,5 @@
-import { useCallback } from "react";
-import { useEffect } from "react";
-import { useLayoutEffect } from "react";
-import { useRef } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useCanvas } from "../Canvas/CanvasContext";
-import { useState } from "react";
 
 export function useShortcut(keyDownMap){
     const mapRef  = useRef(keyDownMap)
@@ -14,9 +10,8 @@ export function useShortcut(keyDownMap){
         const target = e.target.tagName.toLowerCase()
         if (target === 'input' || target === 'textarea') return
         if ((e.ctrlKey || e.metaKey) && ['v', 'c', 'x'].includes(e.key.toLowerCase())) {
-            return; 
+            return
         }
-        e.preventDefault()
         const modifiers= {
             ctrl: e.ctrlKey,
             alt: e.altKey,
@@ -27,6 +22,7 @@ export function useShortcut(keyDownMap){
             undo: mapRef.current.undo,
             redo: mapRef.current.redo,
             select: mapRef.current.select,
+            erase: mapRef.current.erase,
             draw: mapRef.current.draw,
             delete: mapRef.current.delete,
         }
@@ -34,9 +30,11 @@ export function useShortcut(keyDownMap){
             if(shortcut.includes('+')){
                 const keysArray = shortcut.split('+')
                 if(modifiers[keysArray[0]] && e.key == keysArray[1]){
+                    e.preventDefault()
                     return callback(e)
                 }
             }else if(shortcut == e.key || shortcut == e.code){
+                e.preventDefault()
                 return callback()
             }
         })
