@@ -37,6 +37,7 @@ export function CanvasActionsProvider({children}){
                     const file = item.getAsFile()
                     if(file){
                         actionsInfo.uploadImg(file)
+                        return
                     } 
                 }
                 

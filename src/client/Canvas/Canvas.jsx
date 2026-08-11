@@ -46,13 +46,13 @@ async function initCanvas(canvasRef, fabricCanvasRef, canvasInfo, settings){
         if(savedObj){
             const {savedCanvas, pdf} = savedObj
             pdf && uploadPdf(pdf)
-            console.log(savedCanvas);
-            
             if(savedCanvas) {
-                fabricCanvas.loadFromJSON(savedCanvas.canvas)
+                fabricCanvas.loadFromJSON(savedCanvas.canvas || savedCanvas)
                     .then(canvas => canvas.requestRenderAll()
                 )
-                setBackgroundPattern(savedCanvas.metadata.backgroundType)
+                if(savedCanvas.metadata){
+                    setBackgroundPattern(savedCanvas.metadata.backgroundType)
+                }
             }
             
         }
