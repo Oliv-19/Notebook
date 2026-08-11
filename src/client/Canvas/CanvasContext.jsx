@@ -19,7 +19,7 @@ const initStatePdf = {
 export function CanvasProvider({children}){
     const [canvasState, dispatchCanvas] = useReducer(canvasInstanceReducer, initStateCanvas)
     const [pdfState, dispatchPdf] = useReducer(pdfReducer, initStatePdf)
-    const { canvas} = canvasState
+    const { canvas  } = canvasState
     const { pdf }= pdfState
     const [pdfUrl, setPdfUrl] = useState(null)
     const hiddenCanvasRef = useRef()
@@ -56,10 +56,12 @@ export function CanvasProvider({children}){
         setCanvasSize: (width, height)=> {setCanvas('SET_DIMENSIONS', {width, height})},
         canvas: canvas,
         setCanvas: (canvas)=> {setCanvas('SET_CANVAS', canvas)},
-        saveHistory: (canvas)=> {
-            const json = JSON.stringify(canvas.toJSON())
+        saveHistory: (canvasInstance)=> {
+            const json = JSON.stringify(canvasInstance.toJSON())
             setCanvas('SAVE_HISTORY', json)
         },
+        undo: ()=>{setCanvas('UNDO')},
+        redo: ()=>{setCanvas('REDO')},
         uploadPdf: (url)=> {setPDF(url)},
         pdf,
         pdfUrl,

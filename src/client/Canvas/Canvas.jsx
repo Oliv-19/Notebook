@@ -5,6 +5,7 @@ import { useShortcut } from "../hooks/index"
 import { getCanvas } from "../services/canvas"
 import { getCurrNotebook } from "../services/notebooks"
 import { useCanvasActions } from "./CanvasActionsContext"
+import { useCanvasSettings } from "./CanvasSettingsContext"
 
 function configureCanvas(canvas, canvasInfo){
     const { saveHistory } = canvasInfo
@@ -24,9 +25,10 @@ function configureCanvas(canvas, canvasInfo){
     })
 }
 
-async function initCanvas(canvasRef, fabricCanvasRef, canvasInfo){
+async function initCanvas(canvasRef, fabricCanvasRef, canvasInfo, settings){
     const notebook =  getCurrNotebook()
     const { setCanvas } = canvasInfo
+    const { setBackgroundPattern } = settings
     const dpr = window.devicePixelRatio
     const fabricCanvas = new fabric.Canvas(canvasRef.current, {
         isDrawingMode:true,
@@ -44,11 +46,14 @@ async function initCanvas(canvasRef, fabricCanvasRef, canvasInfo){
         if(savedObj){
             const {savedCanvas, pdf} = savedObj
             pdf && uploadPdf(pdf)
-            savedCanvas && fabricCanvas.loadFromJSON(savedCanvas, (obj)=> {
-                    fabricCanvas.renderAll()
-                    fabricCanvas.requestRenderAll()
-                }
-            )
+            console.log(savedCanvas);
+            
+            if(savedCanvas) {
+                fabricCanvas.loadFromJSON(savedCanvas.canvas)
+                    .then(canvas => canvas.requestRenderAll()
+                )
+                setBackgroundPattern(savedCanvas.metadata.backgroundType)
+            }
             
         }
     }
@@ -67,12 +72,14 @@ export function Canvas(){
     const fabricCanvasRef = useRef(null)
     const isExpanding = useRef(false)
     const canvasInfo = useCanvas()
+    const settings = useCanvasSettings()
+
     const {events} = useCanvasActions()
     const {canvas, resetPdf, hiddenCanvasRef} = canvasInfo
     useShortcut(events)
 
     useEffect(()=> {
-        initCanvas(canvasRef, fabricCanvasRef, canvasInfo)
+        initCanvas(canvasRef, fabricCanvasRef, canvasInfo, settings)
         const handleWindowResize = ()=>{ resizeCanvas(fabricCanvasRef.current) }
         window.addEventListener('resize', handleWindowResize ) 
         return () => {

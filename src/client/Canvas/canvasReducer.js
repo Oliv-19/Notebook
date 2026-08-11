@@ -57,6 +57,8 @@ export function canvasSettingsReducer(state, action){
                     source: hiddenCanvas,
                     repeat: 'repeat'
                 })
+                canvas.customBackgroundType = style || state.backgroundPattern
+                canvas.customBackgroundTheme = theme || state.backgroundTheme
                 canvas.requestRenderAll()
             }
             return {...state, backgroundPattern:style || state.backgroundPattern, backgroundTheme: theme || state.backgroundTheme}
@@ -94,7 +96,38 @@ export function canvasInstanceReducer(state, action){
             }
             break
         }
+        case 'UNDO': {
+            const {canvas, undoStack, redoStack} = state
+            if(canvas){
+                const objects = canvas.getObjects()
+                if(objects.length <= 0) return state
+                const lastObj = objects[objects.length-1]
+                canvas.remove(lastObj)
+                canvas.requestRenderAll()
+                return {
+                    ...state,
+                    undoStack: undoStack.slice(0, -1),
+                    redoStack: [...redoStack, lastObj]
+                }
+            }
+            break
         
+        }
+        case 'REDO':{
+            const {canvas, redoStack} = state
+            if(canvas){
+                if(redoStack.length <= 0) return state
+                const objToRestore = redoStack[redoStack.length-1]
+                canvas.add(objToRestore)
+                canvas.requestRenderAll()
+                return {
+                    ...state,
+                    redoStack: redoStack.slice(0, -1),
+                }
+                
+            }
+            break
+        }
         default:
             return state
             break
@@ -103,40 +136,6 @@ export function canvasInstanceReducer(state, action){
 
 export function actionsReducer(state, action){
     switch(action.type){
-        case 'UNDO': {
-            const {canvas} = action.payload
-            if(canvas){
-                const objects = canvas.getObjects()
-                if(objects.length > 0){
-                    const lastObj = objects[objects.length-1]
-                    canvas.remove(lastObj)
-                    canvas.requestRenderAll()
-                    return {
-                        ...state,
-                        undoStack: state.undoStack.slice(0, -1),
-                        redoStack: [...state.redoStack, lastObj]
-                    }
-                }
-            }
-            break
-
-        }
-        case 'REDO':{
-            const {canvas} = action.payload
-            const { redoStack} = state
-            if(canvas){
-                if(redoStack.length > 0){
-                    const objToRestore = redoStack[redoStack.length-1]
-                    canvas.add(objToRestore)
-                    canvas.requestRenderAll()
-                    return {
-                        ...state,
-                        redoStack: redoStack.slice(0, -1),
-                    }
-                }
-            }
-            break
-        }
         case 'SELECT_MODE': {
             const {canvas, isSelect} = action.payload
             if(canvas){

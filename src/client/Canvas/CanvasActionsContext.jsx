@@ -13,7 +13,7 @@ const actionsInitState= {
     redoStack: [],
 }
 export function CanvasActionsProvider({children}){
-    const {canvas, hiddenCanvasRef} = useCanvas()
+    const {canvas, hiddenCanvasRef, undo, redo} = useCanvas()
     const {brushColor, brushSize} = useCanvasSettings()
     const [actionsState, dispatchAction] = useReducer(actionsReducer, actionsInitState)
     const { isSelection } = actionsState
@@ -22,8 +22,8 @@ export function CanvasActionsProvider({children}){
         dispatchAction({type, payload})
     }
     const events= {
-        undo: {shortcut: 'ctrl+z', callback: ()=>{setAction('UNDO', {canvas})} },
-        redo: {shortcut: 'ctrl+y', callback: ()=>{setAction('REDO', {canvas})} },
+        undo: {shortcut: 'ctrl+z', callback: ()=>{undo()} },
+        redo: {shortcut: 'ctrl+y', callback: ()=>{redo()} },
         select: {shortcut: 'v', callback: ()=>{setAction('SELECT_MODE', {isSelect: true, canvas})} },
         draw: {shortcut: 'b', callback: ()=>{setAction('DRAWING_MODE', {canvas, brushColor, brushSize})} },
         erase: {shortcut: '', callback: ()=>{setAction('ERASER_MODE', {canvas, brushSize})} },

@@ -13,7 +13,14 @@ export function SaveButton(){
     const save = async()=> {
         if(!user) navigate('/login')
         const notebook = getCurrNotebook()
-        await saveCanvas(canvas, notebook.id)
+        const finalData = {
+            canvas: canvas.toJSON(),
+            metadata : {
+                backgroundType: canvas.customBackgroundType,
+                backgroundTheme: canvas.customBackgroundTheme
+            }
+        }
+        await saveCanvas(finalData, notebook.id)
         if(pdfUrl && pdfUrl.type !== 'application/pdf'){
             await savePdf(pdfUrl, notebook.id)
         }

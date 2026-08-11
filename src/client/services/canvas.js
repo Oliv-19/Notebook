@@ -1,8 +1,9 @@
 export async function saveCanvas(canvas, notebookId, pdf=null){
+    
     const response = await fetch('/api/save-note',{
         method: 'POST',
         body: JSON.stringify({
-            canvasData: canvas.toJSON(), 
+            canvasData: canvas, 
             notebookId,
             pdf
         })
