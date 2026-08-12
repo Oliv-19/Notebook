@@ -2,10 +2,10 @@ import { useState } from 'react'
 import {Link, useNavigate} from 'react-router'
 import { changeNotebookName, createNB, deleteNotebook, saveCurrNotebook } from '../services/notebooks'
 import { useAuth } from '../AuthContext'
-import { useCanvas } from '../Canvas/CanvasContext'
 import { useNotebooks } from './NotebooksContext'
 import { useEffect } from 'react'
 import { Icon } from '../Icon'
+import { Dropdown } from '../Dropdown'
 
 function NewNotebookModal({close}){
     const navigate = useNavigate()
@@ -20,7 +20,7 @@ function NewNotebookModal({close}){
     }
     return (
         <>
-        <div className="absolute h-full w-full flex justify-center items-center">
+        <div className="absolute h-full w-full flex justify-center items-center z-2">
             <div className=" bg-(--green) w-150 h-60">
                 <form className='w-full h-full flex flex-col items-center 
                     justify-center'
@@ -61,32 +61,29 @@ function Notebook({notebook}){
         <>
         <div className="bg-(--dark-green) w-60 h-40 flex flex-col items-center 
             rounded-2xl  shadow-gray-800 shadow-xl/40 relative">
-            <button className='cursor-pointer absolute top-3 right-3' onClick={()=> {setOpenOptions(true)}}>
+            <button className='cursor-pointer absolute top-3 right-3 w-fit h-fit rounded-4xl
+             hover:bg-(--green) p-1' 
+                onClick={()=> {setOpenOptions(true)}}>
                 <Icon iconName={'three_dots'} style={'w-7 fill-white'}/>
             </button>
-            <div onClick={()=> {setOpenOptions(false)}} 
-                    className={`${openOptions? 'block': 'hidden'} z-2 fixed inset-0 
-                    bg-black/5 transition-opacity` }/>
-            {openOptions && 
-                <div className="flex gap-2 justify-start z-3 absolute top-10 -right-30
-                    bg-(--green) w-40 p-1 h-fit rounded flex-col">
-                    <button onClick={()=> {
-                            setIsEdit(prev => !prev)
-                            setOpenOptions(false)
-                        }} 
-                        className='cursor-pointer w-full bg-transparent flex 
-                        font-medium text-white hover:bg-(--dark-green) py-1 px-2 justify-start gap-2 items-center'>
-                            <Icon iconName={'edit'} style={'fill-white w-6'}/>
-                            Edit title
-                    </button>
-                    <button onClick={delNotebook} 
-                        className='cursor-pointer w-full bg-transparent flex 
-                        font-medium text-white hover:bg-(--dark-green) py-1 px-2 justify-start gap-2 items-center'>
-                            <Icon iconName={'delete_notebook'} style={'fill-white w-6'}/>
-                            Delete
-                    </button>
-                </div>
-            }
+            <Dropdown isOpen={openOptions} close={()=> {setOpenOptions(false)} }
+                    position={'top-10 -right-30'}>
+                <button onClick={()=> {
+                        setIsEdit(prev => !prev)
+                        setOpenOptions(false)
+                    }} 
+                    className='cursor-pointer w-full bg-transparent flex 
+                    font-medium text-white hover:bg-(--dark-green) py-1 px-2 justify-start gap-2 items-center'>
+                        <Icon iconName={'edit'} style={'fill-white w-6'}/>
+                        Edit title
+                </button>
+                <button onClick={delNotebook} 
+                    className='cursor-pointer w-full bg-transparent flex 
+                    font-medium text-white hover:bg-(--dark-green) py-1 px-2 justify-start gap-2 items-center'>
+                        <Icon iconName={'delete_notebook'} style={'fill-white w-6'}/>
+                        Delete
+                </button>
+            </Dropdown>
             {isEdit ? (
                 <>
                 <div className="h-full w-full">
@@ -103,7 +100,7 @@ function Notebook({notebook}){
                             className='h-full w-full'
                         >
                         <p className='w-full h-full flex justify-center text-white 
-                            font-medium first-letter:uppercase lowercase text-xl 
+                            font-medium text-xl 
                             items-center'>
                             {notebook.name}
                         </p>
@@ -129,14 +126,16 @@ export function Notebooks(){
         <div className="flex flex-col justify-center items-center 
             p-20 overflow-y-auto h-screen w-full">
             {isOpen && <NewNotebookModal close={()=>{setIsOpen(false)}}/>}
-            <div className="flex flex-col justify-center items-center 
-                w-full h-full p-20">
-                <button onClick={()=> {setIsOpen(true)}}>
-                    Add new notebook
-                </button>
-            </div>
-            <div className="h-400 w-full flex flex-wrap justify-start gap-5 
-                ">
+            <div className="h-fit min-h-120 w-271 flex flex-wrap justify-start gap-x-10">
+                <div className="bg-(--dark-green) w-60 h-40 flex flex-col items-center 
+                rounded-2xl  shadow-gray-800 shadow-xl/40 relative">
+                     <button className='w-full h-full flex justify-center text-white 
+                        font-medium text-xl flex-col cursor-pointer
+                        items-center' onClick={()=> {setIsOpen(true)}}>
+                            <Icon iconName={'add_notebook'} style={'w-8 fill-white'} />
+                            Create notebook
+                    </button>
+                </div>
                 {userNotebooks && userNotebooks.map((notebook) => 
                     <Notebook notebook={notebook} key={notebook.name}/>
                 )}
