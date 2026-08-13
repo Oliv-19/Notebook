@@ -21,18 +21,40 @@ function NewNotebookModal({close}){
     }
     return (
         <>
-        <div className="absolute h-full w-full flex justify-center items-center z-2">
-            <div className=" bg-(--green) w-150 h-60">
+        <div className="w-full h-full absolute z-2 flex">
+            <div onClick={close} 
+                className="h-full w-full absolute bg-black/20" />
+            <div className="bg-(--green) w-150 h-80 m-auto z-3 rounded-2xl">
                 <form className='w-full h-full flex flex-col items-center 
-                    justify-center'
+                    justify-between p-10 relative text-white font-medium'
                     onSubmit={createNewNotebook}
                     >
-                    <button onClick={close} type='button'>close</button>
-                    <label >
-                        Notebook name:
-                        <input type="text" name="name" id="name"  className='border'/>
-                    </label>
-                    <button type="submit">create</button>
+                        <div className="flex justify-between w-full items-center">
+                            <p className='text-2xl'>
+                                Create New Notebook
+                            </p>
+                            <button className='p-1.5 hover:bg-(--dark-green)/50
+                                rounded-4xl cursor-pointer' 
+                                onClick={close} type='button'>
+                                <Icon iconName={'close'} style={'w-6 fill-white hover'}/>
+                            </button>
+
+                        </div>
+                        <label className='flex flex-col'>
+                            <p className="text-[0.9rem] ">
+                                Notebook name:
+                            </p>
+                            <input type="text" name="name" id="name" required
+                                className='border-b-2 
+                                bg-(--dark-green)/60 p-1 rounded border-(--dark-green)
+                                focus:outline-0 focus:border-white  transition-colors 
+                                duration-300 ease-in-out'/>
+                        </label>
+                        <button className='bg-(--dark-green) p-2 rounded cursor-pointer
+                            hover:bg-(--dark-green)/60'
+                            type="submit">
+                                Create
+                        </button>
                 </form>
             </div>
         </div>
@@ -107,7 +129,7 @@ function Notebook({notebook}){
                         >
                         <p className={`min-w-20 max-w-30 min-h-12 h-fit max-h-18 
                             text-black mt-10 rounded flex items-center justify-center
-                            font-medium bg-[#fffae7] py-2 ${textSize}
+                            font-medium bg-[#fffae7] py-2 ${textSize} text-center
                             `}>
                             {notebook.name}
                         </p>
@@ -144,32 +166,35 @@ export function Notebooks(){
                 Log out
             </button>
         </Nav>
-        <div className="flex flex-col justify-center items-center 
-            p-20 overflow-y-auto h-screen w-full">
+        <div className="relative">
             {isOpen && <NewNotebookModal close={()=>{setIsOpen(false)}}/>}
-            <div className="h-fit min-h-120 w-271 flex flex-wrap justify-start gap-x-10">
-                <div className="bg-(--dark-green) w-45 h-60 flex flex-col items-center 
-                    rounded-2xl  border-l-17 border-[#381807]  shadow-gray-800 
-                    shadow-xl/40 relative">
-                     <button className='w-full h-full flex justify-center text-white 
-                        font-medium text-xl flex-col cursor-pointer
-                        items-center' onClick={()=> {setIsOpen(true)}}>
-                            <Icon iconName={'add_notebook'} style={'w-8 fill-white'} />
-                            Create notebook
-                            <div className="bg-[#fcf9f1] w-45 h-8 absolute bottom-1 
-                                right-0 rounded-l-3xl rounded-r shadow-(--shadow)
-                                border-l-6 border-[#381807]">
-                                <hr className='mt-2 w-43 ml-1 text-[#c4c1b1]' />
-                                <hr className='mt-1 w-43 ml-1 text-[#c4c1b1]' />
-                                <hr className='mt-1 w-43 ml-1 text-[#c4c1b1]' />
-                                <hr className='mt-1 w-43 ml-1 text-[#c4c1b1]' />
-                                <hr className='mt-1 w-43 ml-1 text-[#c4c1b1]' />
-                            </div>
-                    </button>
+            <div className="overflow-y-auto h-138 w-full p-20">
+                <div className="h-fit w-271 flex flex-wrap justify-start gap-x-10
+                    gap-y-8 m-auto">
+                    <div className="bg-(--dark-green) w-45 h-60 flex flex-col items-center 
+                        rounded-2xl  border-l-17 border-[#381807]  shadow-gray-800 
+                        shadow-xl/40 relative">
+                        <button className='w-full h-full flex justify-center text-white 
+                            font-medium text-xl flex-col cursor-pointer
+                            items-center' onClick={()=> {setIsOpen(true)}}>
+                                <Icon iconName={'add_notebook'} style={'w-8 fill-white'} />
+                                Create notebook
+                                <div className="bg-[#fcf9f1] w-45 h-8 absolute bottom-1 
+                                    right-0 rounded-l-3xl rounded-r shadow-(--shadow)
+                                    border-l-6 border-[#381807]">
+                                    <hr className='mt-2 w-43 ml-1 text-[#c4c1b1]' />
+                                    <hr className='mt-1 w-43 ml-1 text-[#c4c1b1]' />
+                                    <hr className='mt-1 w-43 ml-1 text-[#c4c1b1]' />
+                                    <hr className='mt-1 w-43 ml-1 text-[#c4c1b1]' />
+                                    <hr className='mt-1 w-43 ml-1 text-[#c4c1b1]' />
+                                </div>
+                        </button>
+                    </div>
+                    {userNotebooks && userNotebooks.map((notebook) => 
+                        <Notebook notebook={notebook} key={notebook.name}/>
+                    )}
                 </div>
-                {userNotebooks && userNotebooks.map((notebook) => 
-                    <Notebook notebook={notebook} key={notebook.name}/>
-                )}
+
             </div>
         </div>
         </>
