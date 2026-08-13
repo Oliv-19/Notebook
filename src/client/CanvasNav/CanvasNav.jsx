@@ -5,15 +5,13 @@ import { Button } from "./Buttons";
 import { Link } from "react-router";
 import { Setting } from "./Settings";
 import { Options } from "./Options";
+import { Nav } from "../Nav";
 
 
 export function CanvasNav(){
     return (
         <>
-        <nav className="bg-(--dark-green) p-3 flex justify-between w-full h-[8%]">
-            <Link to={'/notebooks'} className="text-white font-medium text-2xl">
-                Notebook
-            </Link>
+        <Nav>
             <Button type={'draw'}/>
             <Button type={'select'}/>
             <Button type={'erase'}/>
@@ -27,7 +25,8 @@ export function CanvasNav(){
             <BrushResize />
             <Options/>
             <Setting />
-        </nav> 
+
+        </Nav>
         </>
     )
 }

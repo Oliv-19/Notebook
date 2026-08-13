@@ -3,6 +3,7 @@
 *{
     --green: #809d84;
     --dark-green:#3b5d40;
+    --shadow: inset 4px 6px 0px 0px #d6d3c2;
 }
 
 .optionStyle{

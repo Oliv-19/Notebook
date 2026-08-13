@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Canvas } from './Canvas/Canvas'
-import { CanvasNav } from './Nav/CanvasNav'
+import { CanvasNav } from './CanvasNav/CanvasNav'
 import { CanvasProvider } from './Canvas/CanvasContext'
 import { CanvasSettingsProvider } from './Canvas/CanvasSettingsContext'
 import { PdfViewer } from './Canvas/PdfViewer'

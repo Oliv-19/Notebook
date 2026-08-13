@@ -6,6 +6,7 @@ import { useNotebooks } from './NotebooksContext'
 import { useEffect } from 'react'
 import { Icon } from '../Icon'
 import { Dropdown } from '../Dropdown'
+import { Nav } from '../Nav'
 
 function NewNotebookModal({close}){
     const navigate = useNavigate()
@@ -57,10 +58,15 @@ function Notebook({notebook}){
         setNewName(notebook.name)
         getNotebooks()
     }
+    const textSize = notebook.name.length > 30 ? 'text-xs' : (
+        notebook.name.length > 20 ? 'text-sm':(
+            notebook.name.length > 10 ? 'text-base' : 'text-xl'
+        )
+    )
     return(
         <>
-        <div className="bg-(--dark-green) w-60 h-40 flex flex-col items-center 
-            rounded-2xl  shadow-gray-800 shadow-xl/40 relative">
+        <div className="bg-(--dark-green) w-45 h-60 flex flex-col items-center 
+            rounded-2xl  border-l-17 border-[#381807]  shadow-gray-800 shadow-xl/40 relative">
             <button className='cursor-pointer absolute top-3 right-3 w-fit h-fit rounded-4xl
              hover:bg-(--green) p-1' 
                 onClick={()=> {setOpenOptions(true)}}>
@@ -97,13 +103,23 @@ function Notebook({notebook}){
                 <>
                     <Link onClick={()=>{updateNotebook(notebook)}}
                             to={`/notebooks/${notebook.name}`} 
-                            className='h-full w-full'
+                            className='h-full w-full flex justify-center '
                         >
-                        <p className='w-full h-full flex justify-center text-white 
-                            font-medium text-xl 
-                            items-center'>
+                        <p className={`min-w-20 max-w-30 min-h-12 h-fit max-h-18 
+                            text-black mt-10 rounded flex items-center justify-center
+                            font-medium bg-[#fffae7] py-2 ${textSize}
+                            `}>
                             {notebook.name}
                         </p>
+                        <div className="bg-[#fcf9f1] w-45 h-8 absolute bottom-1 
+                            right-0 rounded-l-3xl rounded-r shadow-(--shadow)
+                            border-l-6 border-[#381807]">
+                            <hr className='mt-2 w-43 ml-1 text-[#c4c1b1]' />
+                            <hr className='mt-1 w-43 ml-1 text-[#c4c1b1]' />
+                            <hr className='mt-1 w-43 ml-1 text-[#c4c1b1]' />
+                            <hr className='mt-1 w-43 ml-1 text-[#c4c1b1]' />
+                            <hr className='mt-1 w-43 ml-1 text-[#c4c1b1]' />
+                        </div>
                     </Link>
                 </>
             )
@@ -123,17 +139,32 @@ export function Notebooks(){
     if(isLoading) return <div className="">Loading...</div>
     return (
         <>
+        <Nav>
+            <button>
+                Log out
+            </button>
+        </Nav>
         <div className="flex flex-col justify-center items-center 
             p-20 overflow-y-auto h-screen w-full">
             {isOpen && <NewNotebookModal close={()=>{setIsOpen(false)}}/>}
             <div className="h-fit min-h-120 w-271 flex flex-wrap justify-start gap-x-10">
-                <div className="bg-(--dark-green) w-60 h-40 flex flex-col items-center 
-                rounded-2xl  shadow-gray-800 shadow-xl/40 relative">
+                <div className="bg-(--dark-green) w-45 h-60 flex flex-col items-center 
+                    rounded-2xl  border-l-17 border-[#381807]  shadow-gray-800 
+                    shadow-xl/40 relative">
                      <button className='w-full h-full flex justify-center text-white 
                         font-medium text-xl flex-col cursor-pointer
                         items-center' onClick={()=> {setIsOpen(true)}}>
                             <Icon iconName={'add_notebook'} style={'w-8 fill-white'} />
                             Create notebook
+                            <div className="bg-[#fcf9f1] w-45 h-8 absolute bottom-1 
+                                right-0 rounded-l-3xl rounded-r shadow-(--shadow)
+                                border-l-6 border-[#381807]">
+                                <hr className='mt-2 w-43 ml-1 text-[#c4c1b1]' />
+                                <hr className='mt-1 w-43 ml-1 text-[#c4c1b1]' />
+                                <hr className='mt-1 w-43 ml-1 text-[#c4c1b1]' />
+                                <hr className='mt-1 w-43 ml-1 text-[#c4c1b1]' />
+                                <hr className='mt-1 w-43 ml-1 text-[#c4c1b1]' />
+                            </div>
                     </button>
                 </div>
                 {userNotebooks && userNotebooks.map((notebook) => 
