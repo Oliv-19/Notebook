@@ -6,10 +6,10 @@ import { and, eq } from "drizzle-orm";
 
 const notebooksApi = new Hono()
 notebooksApi.post('/api/notebook', auth, async (c) => {
-    const {name} = await c.req.json()
+    const {name, style} = await c.req.json()
     const db = drizzle(c.env.DB, schema)
     const user = c.get('user')
-    console.log(name, user);
+    console.log(name, user, style);
     
     try{
         if(!user) return c.json({success:false, error: 'User not found'}, 404)
@@ -19,6 +19,7 @@ notebooksApi.post('/api/notebook', auth, async (c) => {
         .values({
             userId: user.id,
             name: name,
+            notebookStyle: style
         }).returning()
         return c.json({notebook}, 201)
 
@@ -106,7 +107,7 @@ notebooksApi.get('/api/notebook', auth, async (c) => {
     
 })
 notebooksApi.put('/api/edit-notebook', auth, async (c) => {
-    const {notebookId, newName} = await c.req.json()
+    const {notebookId, newName, notebookStyle} = await c.req.json()
     const db = drizzle(c.env.DB, {schema})
     const user = c.get('user')
     
@@ -114,7 +115,7 @@ notebooksApi.put('/api/edit-notebook', auth, async (c) => {
         if(!user) return c.json({success:false, error: 'User not found'}, 404)
         
         const notebook = await db.update(schema.userNotebook)
-        .set({name: newName})
+        .set({name: newName, notebookStyle:notebookStyle})
         .where(and(
             eq(schema.userNotebook.userId, user.id),
             eq(schema.userNotebook.id, notebookId),

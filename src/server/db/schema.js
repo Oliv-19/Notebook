@@ -19,6 +19,7 @@ export const userNotebook = sqliteTable('notebook_user', {
     userId: integer('user_id').notNull().references(() => users.id, {onDelete: 'cascade'}),
     name: text('name').default(new Date().toLocaleDateString()),
     canvasInfo: text('canvas_info'),
+    notebookStyle: text('notebook_style'),
     createdAt: integer('created_at', { mode: "timestamp" })
         .notNull()
         .default(new Date()),

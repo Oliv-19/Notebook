@@ -1,7 +1,7 @@
-export const createNB = async(name) => {
+export const createNB = async(name, style = null) => {
     const response = await fetch('/api/notebook',{
         method: 'POST',
-        body: JSON.stringify({name})
+        body: JSON.stringify({name, style})
     })
     if(!response.ok) return null
     const data = await response.json()
@@ -32,10 +32,10 @@ export const deleteNotebook = async(id) => {
     return data
 }
 
-export const changeNotebookName = async(id, newName) => {
+export const editNotebook = async(id, newName, color) => {
     const response = await fetch(`/api/edit-notebook`, {
         method: 'PUT',
-        body: JSON.stringify({notebookId: id, newName})
+        body: JSON.stringify({notebookId: id, newName, notebookStyle:color})
     })
     if(!response.ok) return null
     return 

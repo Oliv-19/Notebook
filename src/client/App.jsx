@@ -47,7 +47,7 @@ function App() {
     <>
     <AuthProvider>
       <NotebookProvider>
-        <div className="overflow-y-hidden w-screen">
+        <div className="overflow-y-hidden w-screen h-screen">
           <Routes>
               <Route path='/' element={<Root/>} />
               <Route path='/notebooks' element={<Notebooks/>} />

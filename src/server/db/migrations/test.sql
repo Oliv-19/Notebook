@@ -1,0 +1,1 @@
+ALTER TABLE `notebook_user` ADD COLUMN `notebook_style` text;
