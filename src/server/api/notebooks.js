@@ -53,7 +53,7 @@ notebooksApi.post('/api/save-note', auth, async (c) => {
 
     } catch (e){
         console.error(e)
-        return c.json({success:false}, 400)
+        return c.json({success:false, error: e.message}, 400)
         
     }
     

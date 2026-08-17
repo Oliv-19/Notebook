@@ -32,7 +32,7 @@ function configureCanvas(canvas, canvasInfo){
 async function initCanvas(canvasRef, fabricCanvasRef, canvasInfo, settings){
     const notebook =  getCurrNotebook()
     const { setCanvas, saveHistory } = canvasInfo
-    const { setBackgroundPattern } = settings
+    const { setBackgroundPattern, setBrushColor } = settings
     const dpr = window.devicePixelRatio
     const fabricCanvas = new fabric.Canvas(canvasRef.current, {
         isDrawingMode:true,
@@ -62,6 +62,7 @@ async function initCanvas(canvasRef, fabricCanvasRef, canvasInfo, settings){
                         savedCanvas.metadata.backgroundType, 
                         savedCanvas.metadata.backgroundTheme
                     )
+                    savedCanvas.metadata.backgroundTheme.bg == '#353535' && setBrushColor('#ffffff')
                 }
             }
             

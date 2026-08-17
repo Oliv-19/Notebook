@@ -10,7 +10,7 @@ export async function saveCanvas(canvas, notebookId, pdf=null){
     })
     if(!response.ok) return null
     const data = await response.json()
-    return
+    return data
 }
 
 export async function getCanvas(id) {
