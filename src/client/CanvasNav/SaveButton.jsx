@@ -23,7 +23,7 @@ function optimizeCanvasJson(canvasJson) {
             stroke: obj.stroke,
             strokeWidth: obj.strokeWidth,
             path: obj.path,
-    
+            src: obj.src
         }
         obj.originX !== 'left' && ( obj.originX = cleanedObj.originX )
         obj.originY !== 'top' && ( obj.originY = cleanedObj.originY )
