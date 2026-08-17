@@ -33,7 +33,7 @@ notebooksApi.post('/api/notebook', auth, async (c) => {
 
 notebooksApi.post('/api/save-note', auth, async (c) => {
     const {canvasData, notebookId} = await c.req.json()
-    const db = drizzle(c.env.DB, {schema})
+    const KV = c.env.NOTEBOOKS
     const user = c.get('user')
     
     try{
@@ -41,19 +41,14 @@ notebooksApi.post('/api/save-note', auth, async (c) => {
         if (!canvasData) {
             return c.json({success:false, error: 'Canvas data not found' }, 404);
         }
-        
-        const notebook = await db.update(schema.userNotebook)
-        .set({canvasInfo: JSON.stringify(canvasData)})
-        .where(and(
-            eq(schema.userNotebook.userId, user.id),
-            eq(schema.userNotebook.id, notebookId),
-        ))
+        const notebookData = await KV.put(notebookId, JSON.stringify(canvasData))
         
         return c.json({success: true}, 201)
 
     } catch (e){
+        console.error(e.cause)
         console.error(e)
-        return c.json({success:false, error: e.message}, 400)
+        return c.json({success:false}, 400)
         
     }
     
@@ -62,7 +57,7 @@ notebooksApi.get('/api/get-note/:id', auth, async (c) => {
     const id = await c.req.param('id')
     const db = drizzle(c.env.DB, {schema})
     const user = c.get('user')
-    
+    const KV = c.env.NOTEBOOKS
     try{
         if(!user) return c.json({success:false, error: 'User not found'}, 404)
         const notebook = await db.query.userNotebook.findFirst({
@@ -76,7 +71,11 @@ notebooksApi.get('/api/get-note/:id', auth, async (c) => {
         })
         if(!notebook) return c.json({success:false ,error:'Notebook not found'}, 400)
         const file = notebook.file?.pdfUrl
-        return c.json({canvas: notebook.canvasInfo, pdf: file}, 200)
+        const canvasData = await KV.get(id, {type: 'json'})
+        
+        if(!canvasData) return c.json({canvas: notebook.canvasInfo, pdf: file}, 200)
+            
+        return c.json({canvas: JSON.stringify(canvasData), pdf: file}, 200)
 
     } catch (e){
         console.error(e)

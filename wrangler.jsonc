@@ -9,7 +9,7 @@
 		"head_sampling_rate": 1,
 		"logs": {
 			"enabled": true
-		} 
+		}
 	},
 	"assets": {
 		"directory": "./dist",
@@ -22,6 +22,12 @@
 			"database_name": "notebook_db",
 			"database_id": "6a6d353b-1274-4a90-b22c-fc57d45f403b",
 			"migrations_dir": "./src/server/db/migrations"
+		}
+	],
+	"kv_namespaces": [
+		{
+			"binding": "NOTEBOOKS",
+			"id": "f670095e77d14cf29ef9b245f895c66e"
 		}
 	]
 }
