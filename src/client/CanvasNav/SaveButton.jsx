@@ -12,33 +12,37 @@ function optimizeCanvasJson(canvasJson) {
     if(!canvasJson || !canvasJson.objects ) return canvasJson
     
     const cleanedJson = canvasJson.objects.map((obj)=>{
-        const  cleanedObj= {
-            type: obj.type,
-            version: obj.version,
-            top: obj.top,
-            left: obj.left,
-            width: obj.width,
-            height: obj.height,
-            fill: obj.fill,
-            stroke: obj.stroke,
-            strokeWidth: obj.strokeWidth,
-            path: obj.path,
-            src: obj.src
-        }
-        obj.originX !== 'left' && ( obj.originX = cleanedObj.originX )
-        obj.originY !== 'top' && ( obj.originY = cleanedObj.originY )
-        obj.opacity !== 1 && ( obj.opacity = cleanedObj.opacity )
-        obj.visible !== true && ( obj.visible = cleanedObj.visible )
-        obj.selectable !== true && ( obj.selectable = cleanedObj.selectable )
-        obj.evented !== true && ( obj.evented = cleanedObj.evented )
+        const cleanedObj = {...obj}
+        if(cleanedObj.originX == 'left') delete cleanedObj.originX 
+        if(cleanedObj.originY == 'top') delete cleanedObj.originY 
+        if(cleanedObj.opacity == 1) delete cleanedObj.opacity 
+        if(cleanedObj.visible == true) delete cleanedObj.visible
+        if(cleanedObj.selectable == true) delete cleanedObj.selectable 
+        if(cleanedObj.evented == true) delete cleanedObj.evented
 
-        obj.scaleX !== 1 && ( obj.scaleX = cleanedObj.scaleX )
-        obj.scaleY !== 1 && ( obj.scaleY = cleanedObj.scaleY )
-        obj.angle !== 0 && ( obj.angle = cleanedObj.angle )
-        obj.skewX !== 0 && ( obj.skewX = cleanedObj.skewX )
-        obj.skewY !== 0 && ( obj.skewY = cleanedObj.skewY )
-        obj.flipX !== false && ( obj.flipX = cleanedObj.flipX )
-        obj.flipY !== false && ( obj.flipY = cleanedObj.flipY )
+        if(cleanedObj.hasControls == true) delete cleanedObj.hasControls
+        if(cleanedObj.hasBorders == true) delete cleanedObj.hasBorders
+        if(cleanedObj.lockScalingX == true) delete cleanedObj.lockScalingX
+        if(cleanedObj.lockScalingY == true) delete cleanedObj.lockScalingY
+        if(cleanedObj.lockRotation == true) delete cleanedObj.lockRotation
+        if(cleanedObj.strokeDashOffset == 0) delete cleanedObj.strokeDashOffset
+        if(cleanedObj.strokeLineCap == 'butt') delete cleanedObj.strokeLineCap
+        if(cleanedObj.strokeLineJoin == 'miter') delete cleanedObj.strokeLineJoin
+        if(cleanedObj.strokeMiterLimit == 4) delete cleanedObj.strokeMiterLimit
+        if(cleanedObj.shadow == null) delete cleanedObj.shadow
+        if(cleanedObj.clipPath == null) delete cleanedObj.clipPath
+        if(cleanedObj.backgroundColor == null || cleanedObj.backgroundColor == '') delete cleanedObj.backgroundColor
+
+        if(cleanedObj.scaleX == 1) delete cleanedObj.scaleX 
+        if(cleanedObj.scaleY == 1) delete cleanedObj.scaleY 
+        if(cleanedObj.angle == 0) delete cleanedObj.angle 
+        if(cleanedObj.skewX == 0) delete cleanedObj.skewX
+        if(cleanedObj.skewY == 0) delete cleanedObj.skewY 
+        if(cleanedObj.flipX == false) delete cleanedObj.flipX 
+        if(cleanedObj.flipY == false) delete cleanedObj.flipY 
+        if (cleanedObj.styles && Object.keys(cleanedObj.styles).length === 0) {
+            delete cleaned.styles;
+        }
         return cleanedObj
     })
     return {background: canvasJson.background, version: canvasJson.version, objects: cleanedJson}

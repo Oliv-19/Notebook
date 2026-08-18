@@ -50,7 +50,15 @@ export function CanvasProvider({children}){
             }
         }
     }, [pdf, canvas])
-
+    let timeout = null
+    
+    const timedOutAction = (type) => {
+        clearTimeout(timeout)
+        timeout= setTimeout(() => {
+            setCanvas(type)
+        }, 200)
+    }
+    
     const canvasInfo = {
         setCanvasSize: (width, height)=> {setCanvas('SET_DIMENSIONS', {width, height})},
         canvas: canvas,
@@ -59,8 +67,8 @@ export function CanvasProvider({children}){
             const json = JSON.stringify(canvasInstance.toJSON())
             setCanvas('SAVE_HISTORY', json)
         },
-        undo: ()=>{setCanvas('UNDO')},
-        redo: ()=>{setCanvas('REDO')},
+        undo: ()=>{ timedOutAction('UNDO')},
+        redo: ()=>{timedOutAction('REDO')},
         uploadPdf: (url)=> {setPDF(url)},
         pdf,
         pdfUrl,
