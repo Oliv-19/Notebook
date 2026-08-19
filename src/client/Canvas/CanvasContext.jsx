@@ -3,6 +3,8 @@ import { useState, useEffect, createContext, useContext } from "react"
 import { canvasInstanceReducer, pdfReducer } from "./canvasReducer"
 import { getPdf } from "../services/pdfs"
 import { useRef } from "react"
+import { useCallback } from "react"
+import { optimizeCanvasJson } from '../CanvasNav/SaveButton'
 
 const CanvasContext = createContext()
 const initStateCanvas = {
@@ -52,21 +54,21 @@ export function CanvasProvider({children}){
     }, [pdf, canvas])
     let timeout = null
     
-    const timedOutAction = (type) => {
+    const timedOutAction = useCallback((type) => {
         clearTimeout(timeout)
         timeout= setTimeout(() => {
             setCanvas(type)
         }, 200)
-    }
+    })
     
     const canvasInfo = {
         setCanvasSize: (width, height)=> {setCanvas('SET_DIMENSIONS', {width, height})},
         canvas: canvas,
         setCanvas: (canvas)=> {setCanvas('SET_CANVAS', canvas)},
-        saveHistory: (canvasInstance)=> {
+        saveHistory: useCallback((canvasInstance)=> {
             const json = JSON.stringify(canvasInstance.toJSON())
-            setCanvas('SAVE_HISTORY', json)
-        },
+            setCanvas('SAVE_HISTORY', optimizeCanvasJson(json))
+        }),
         undo: ()=>{ timedOutAction('UNDO')},
         redo: ()=>{timedOutAction('REDO')},
         uploadPdf: (url)=> {setPDF(url)},

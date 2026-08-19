@@ -8,7 +8,7 @@ import { savePdf } from "../services/pdfs"
 import { useCanvasSettings } from "../Canvas/CanvasSettingsContext"
 import { useState } from "react"
 
-function optimizeCanvasJson(canvasJson) {
+export function optimizeCanvasJson(canvasJson) {
     if(!canvasJson || !canvasJson.objects ) return canvasJson
     
     const cleanedJson = canvasJson.objects.map((obj)=>{

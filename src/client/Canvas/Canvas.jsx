@@ -37,6 +37,7 @@ async function initCanvas(canvasRef, fabricCanvasRef, canvasInfo, settings){
     const fabricCanvas = new fabric.Canvas(canvasRef.current, {
         isDrawingMode:true,
         enableRetinaScaling: true,
+        renderOnAddRemove: false
     }) 
     fabricCanvas.setDimensions({
         width: window.innerWidth -15, 
@@ -95,7 +96,12 @@ export function Canvas(){
         window.addEventListener('resize', handleWindowResize ) 
         return () => {
             window.removeEventListener('resize', handleWindowResize )
-            if(canvas) canvas.dispose()
+            if(canvas) {
+                canvas.off('object:added')
+                canvas.off('object:modified')
+                canvas.off('selection:created')
+                canvas.dispose()
+            }
             resetPdf()
         }   
     }, [])

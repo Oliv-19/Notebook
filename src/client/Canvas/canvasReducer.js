@@ -66,7 +66,7 @@ export function canvasSettingsReducer(state, action){
             return state
             break
         }
-        }
+    }
         
 export function canvasInstanceReducer(state, action){
     switch(action.type){
@@ -86,28 +86,31 @@ export function canvasInstanceReducer(state, action){
             break
         case 'SAVE_HISTORY':{
             const {canvas, undoStack} = state
+            const newUndoStack= [...undoStack]
             if(canvas == action.payload) return state
+            if(undoStack.length > 20) newUndoStack.shift()
             return {
                 ...state,
                 redoStack: [],
-                undoStack: [...state.undoStack, action.payload]
+                undoStack: [...newUndoStack, action.payload]
             }
             break
         }
         case 'UNDO': {
             const {canvas, undoStack, redoStack} = state
-            if(canvas){
-                if(undoStack.length <= 1) return state
+            const newRedoStack= [...redoStack]
+            if(canvas && undoStack.length > 1){
                 const currentState = undoStack[undoStack.length-1]
                 const lastState = undoStack[undoStack.length-2]
                 canvas.loadFromJSON(lastState)
                 .then((loadedCanvas)=> {
                     loadedCanvas.requestRenderAll()
                     }) 
+                if(redoStack.length > 20) newRedoStack.shift()
                 return {
                     ...state,
                     undoStack: undoStack.slice(0, -1),
-                    redoStack: [...redoStack, currentState]
+                    redoStack: [...newRedoStack, currentState]
                 }
             }
             break
@@ -115,17 +118,18 @@ export function canvasInstanceReducer(state, action){
         }
         case 'REDO':{
             const {canvas, redoStack, undoStack} = state
-            if(canvas){
-                if(redoStack.length <= 0) return state
+            const newUndoStack= [...undoStack]
+            if(canvas && redoStack.length <= 0){
                 const nextState = redoStack[redoStack.length-1]
                 canvas.loadFromJSON(nextState)
                 .then((loadedCanvas)=> {
                     loadedCanvas.requestRenderAll()
                     }) 
+                if(undoStack.length > 20) newUndoStack.shift()
                 return {
                     ...state,
                     redoStack: redoStack.slice(0, -1),
-                    undoStack:  [...undoStack, nextState]
+                    undoStack:  [...newUndoStack, nextState]
                 }
                 
             }
